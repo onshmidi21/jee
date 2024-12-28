@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="https://jakarta.ee/xml/ns/javaee"
+         xmlns:web="https://jakarta.ee/xml/ns/javaee/web-app_5_0.xsd"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/javaee https://jakarta.ee/xml/ns/javaee/web-app_5_0.xsd"
+         id="WebApp_ID"
+         version="5.0">
+  <display-name>CinemaWeb</display-name>
+
+
+  <welcome-file-list>
+     <welcome-file>inscription.jsp</welcome-file>
+ 
+  </welcome-file-list>
+
+     <servlet>
+        <servlet-name>CinemaServlet</servlet-name>
+        <servlet-class>com.controlleur.CinemaServlet</servlet-class>
+    </servlet>
+
+    <!-- Mapping du servlet à une URL -->
+    <servlet-mapping>
+        <servlet-name>CinemaServlet</servlet-name>
+        <url-pattern>/cinema</url-pattern>
+    </servlet-mapping>
+    <servlet>
+    <servlet-name>ListFilms</servlet-name>
+    <servlet-class>com.controlleur.ListFilms</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ListFilms</servlet-name>
+    <url-pattern>/films</url-pattern>
+</servlet-mapping>
+ <servlet>
+    <servlet-name>Inscription</servlet-name>
+    <servlet-class>com.controlleur.Inscription</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>Inscription</servlet-name>
+    <url-pattern>/inscrit</url-pattern>
+</servlet-mapping>
+
+</web-app>
