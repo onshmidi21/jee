@@ -2,6 +2,7 @@ package com.entities;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class SalleDeProjection implements Serializable {
@@ -13,21 +14,17 @@ public class SalleDeProjection implements Serializable {
   
 
     @ManyToOne
-    @JoinColumn(name = "film_id")
-    public Film film; // Film projeté dans cette salle
-
-    @ManyToOne
+    public  Film film; // Film projeté dans cette salle
+    @OneToMany(mappedBy = "salle")
+    private List<Seance> seances;
+    @OneToOne
     @JoinColumn(name = "salle_id") 
     public Salle salle; // Salle physique où a lieu la projection
 
     // Constructeurs
     public SalleDeProjection() {}
 
-    public SalleDeProjection( Film film, Salle salle) {
-   
-        this.film = film;
-        this.salle = salle;
-    }
+ 
 
     // Getters et Setters
     public int getId() {
@@ -58,6 +55,6 @@ public class SalleDeProjection implements Serializable {
 
     @Override
     public String toString() {
-        return "SalleDeProjection [id=" + id +", film=" + film.getTitle() + ", salle=" + salle.getName() + "]";
+        return "SalleDeProjection [id=" + id  + ", salle=" + salle.getName() + "]";
     }
 }

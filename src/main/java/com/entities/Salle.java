@@ -57,6 +57,9 @@ public Cinema cinema ;
     public int getCapacite() {
         return capacite;
     }
+    public Cinema getCinema() {
+        return cinema ;
+    }
 
     public void setCapacite(int capacite) {
         this.capacite = capacite;
@@ -69,5 +72,9 @@ public Cinema cinema ;
 
 	public void setPlaces(List<Place> places2) {
 this.places=places2;		
+	}
+
+	public void setCinema(Cinema cinema2) {
+this.cinema=cinema2;		
 	}
 }

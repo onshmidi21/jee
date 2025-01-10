@@ -2,25 +2,37 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Header</title>
+    <title>Creative Header - Noir et Orange</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f4f4;
         }
 
         header {
-            background: #000;
+            background: #000; /* Fond noir */
             width: 100%;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        header.sticky {
+            position: fixed;
+            background: #000; /* Fond noir fixe */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .top-header {
-            background: #1a1a1a;
-            padding: 5px 0;
+            background: rgba(255, 69, 0, 0.1); /* Fond orange transparent */
+            padding: 10px 0;
         }
 
         .top-header-content {
@@ -32,10 +44,15 @@
         }
 
         .top-header a {
-            color: #fff;
+            color: #fff; /* Texte blanc */
             text-decoration: none;
             font-size: 14px;
             margin-left: 20px;
+            transition: color 0.3s;
+        }
+
+        .top-header a:hover {
+            color: #ff4500; /* Orange au survol */
         }
 
         .main-header {
@@ -44,45 +61,60 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 20px;
+            position: relative;
         }
 
         .logo {
-            color: #fff;
-            font-size: 24px;
+            color: #ff4500; /* Logo orange */
+            font-size: 28px;
             font-weight: bold;
             text-decoration: none;
-        }
-
-        .main-nav {
             display: flex;
             align-items: center;
         }
 
+        .logo img {
+            width: 40px;
+            margin-right: 10px;
+            animation: spin 5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1; /* Prend tout l'espace disponible */
+            margin-left: 20px; /* Évite que le nav ne touche le logo */
+        }
+
         .main-nav a {
-            color: #fff;
+            color: #fff; /* Texte blanc */
             text-decoration: none;
-            margin-left: 30px;
+            margin: 0 15px; /* Espacement entre les liens */
             font-weight: bold;
+            position: relative;
             transition: color 0.3s;
         }
 
-        .main-nav a:hover {
-            color: #e50914;
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: #ff4500; /* Ligne orange */
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s;
         }
 
-        .search-bar {
-            position: relative;
-            margin-left: 30px;
-        }
-
-        .search-bar input {
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: none;
-            width: 200px;
-            background: #333;
-            color: #fff;
+        .main-nav a:hover::after {
+            width: 100%;
         }
 
         @media (max-width: 768px) {
@@ -91,6 +123,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <body>
@@ -102,13 +135,13 @@
             </div>
         </div>
         <div class="main-header">
-            <a href="#" class="logo">Cinema</a>
+            <a href="#" class="logo">
+                <img src="https://via.placeholder.com/40" alt="Logo">
+                Cinema
+            </a>
             <nav class="main-nav">
                 <a href="films">Films à l'affiche</a>
                 <a href="cinema">Cinémas</a>
-                <div class="search-bar">
-                    <input type="text" placeholder="Rechercher...">
-                </div>
             </nav>
         </div>
     </header>
@@ -120,12 +153,6 @@
             } else {
                 $('header').removeClass('sticky');
             }
-        });
-
-        $('.search-bar input').on('focus', function() {
-            $(this).css('width', '300px');
-        }).on('blur', function() {
-            $(this).css('width', '200px');
         });
     </script>
 </body>

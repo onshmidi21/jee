@@ -17,15 +17,14 @@ public class Ticket implements Serializable {
     
     @OneToOne
     @JoinColumn(name = "place_id")
-    private Place Place;
+    public Place place;
 
     
     @ManyToOne
     @JoinColumn(name = "seance_id")
 	public Seance seance;
 
-    @OneToOne
-	public Place place;
+   
 
    
 
@@ -55,6 +54,9 @@ public class Ticket implements Serializable {
         this.seance = seance;
     }
 
+   public Place getPlace() {
+	   return place;
+		   }
    
 
    

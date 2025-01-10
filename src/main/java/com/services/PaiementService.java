@@ -8,6 +8,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import com.entities.Place.Status;
+import com.entities.Seance;
 @Stateless
 public class PaiementService implements PaiementLocal {
 
@@ -16,6 +17,10 @@ public class PaiementService implements PaiementLocal {
 
     @EJB
     private CompteLocal compteService;
+    @EJB
+    private PlaceLocal placeservice;
+    @EJB
+    private SeanceLocal seanceservice;
     @PersistenceContext
     private EntityManager em;
 
@@ -41,26 +46,28 @@ public class PaiementService implements PaiementLocal {
 
         return true; // Paiement effectué avec succès
     }
-@Override
-    public boolean effectuerPaiementAvecTicket(int compteId, int ticketId) {
-        // Récupérer le ticket
-        Ticket ticket = entityMgr.find(Ticket.class, ticketId);
-        if (ticket == null) {
-            throw new IllegalArgumentException("Ticket non trouvé");
+    @Override
+    public boolean effectuerPaiementAvecPlaceEtSeance(int compteId, int placeId, int seanceId) {
+        // Récupérer la place et la séance
+        Place place = placeservice.find(placeId) ;
+        Seance seance =seanceservice.find(seanceId);
+
+        if (place == null || seance == null) {
+            throw new IllegalArgumentException("Place ou séance non trouvée");
         }
 
-        // Vérifier le montant du ticket
-        Float montant = (float) ticket.seance.getTarif();
+        // Vérifier le montant de la séance
+        Float montant = (float) seance.getTarif();
         if (montant == null || montant <= 0.0f) {
-            throw new IllegalArgumentException("Montant invalide pour le ticket");
+            throw new IllegalArgumentException("Montant invalide pour la séance");
         }
+
         // Mettre à jour le statut de la place à "OCCUPEE"
-        ticket.place.setStatus(Status.OCCUPEE);
-		em.merge(ticket.place);
+        place.setStatus(Status.OCCUPEE);
+        entityMgr.merge(place);
+
         // Effectuer le paiement
         return effectuerPaiement(compteId, montant);
-
-       
     }
 
     @Override

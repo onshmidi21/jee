@@ -11,7 +11,8 @@ import jakarta.persistence.PersistenceContext;
 
 @Stateless
 public class TicketImp implements TicketLocal {
-    @PersistenceContext
+    @PersistenceContext(unitName = "Cinema-ejbPU")
+
     private EntityManager em;
     
    

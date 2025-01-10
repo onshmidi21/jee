@@ -1,87 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.entities.User, com.entities.Ticket, com.entities.Compte" %>
+<%@ page import="com.entities.Place, com.entities.Seance" %>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Paiement</title>
-    <style>
-        .payment-form {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-        .error {
-            color: red;
-            margin: 10px 0;
-        }
-        .ticket-info {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-        }
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        button[disabled] {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - Pathé</title>
 </head>
 <body>
-    <div class="payment-form">
+    <div class="container">
+        <h1>Confirmation de paiement</h1>
         <%
-        // Récupération des attributs
-        User user = (User) session.getAttribute("user");
-        Ticket ticket = (Ticket) request.getAttribute("ticket");
-        Compte compte = (Compte) request.getAttribute("compte");
-        String error = (String) request.getAttribute("error");
-        
-        // Vérification de la session utilisateur
-        if (user == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-        
-        // Affichage des erreurs
-        if (error != null) {
-        %>
-            <p class="error"><%= error %></p>
-        <%
-        }
-        
-        // Affichage des informations de paiement
-        if (ticket != null && compte != null && ticket.getSeance() != null && 
-            ticket.getSeance().getSalle() != null && 
-            ticket.getSeance().getSalle().getFilm() != null && 
-            ticket.place != null) {
-        %>
-            <h2>Confirmation de paiement</h2>
-            <div class="ticket-info">
-                <p><strong>Film :</strong> <%= ticket.getSeance().getSalle().getFilm().getTitle() %></p>
-                <p><strong>Séance :</strong> <%= ticket.getSeance().getDate() %></p>
-                <p><strong>Place :</strong> <%= ticket.place.getRow() %>-<%= ticket.place.getCol() %></p>
-                <p><strong>Montant à payer :</strong> <%= ticket.getSeance().getTarif() %> €</p>
-                <p><strong>Votre solde :</strong> <%= compte.getSolde() %> €</p>
-            </div>
+            Place place = (Place) request.getAttribute("place");
+            Seance seance = (Seance) request.getAttribute("seance");
 
-            <form action="paiement" method="post">
-                <input type="hidden" name="ticketId" value="<%=ticket.getId() %>">
-                <button type="submit" 
-                        <%= compte.getSolde() < ticket.getSeance().getTarif() ? "disabled" : "" %>>
-                    Confirmer le paiement
-                </button>
-            </form>
-        <%
-        } else {
+            if (place == null || seance == null) {
+                out.println("<p style='color: red;'>Erreur : Place ou séance non trouvée.</p>");
+            } else {
         %>
-            <p>Les informations de paiement ne sont pas disponibles. Veuillez réessayer.</p>
-            <a href="javascript:history.back()">Retour</a>
+                <p>Place: <%= place.getRow() %>-<%= place.getCol() %></p>
+                <p>Séance: <%= seance.getSalle().getFilm().getTitle() %></p>
+                <p>Prix: <%= seance.getTarif() %> €</p>
+
+                
         <%
-        }
+            }
         %>
     </div>
+
+   
 </body>
 </html>

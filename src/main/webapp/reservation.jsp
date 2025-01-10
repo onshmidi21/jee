@@ -1,45 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.entities.*" %>
-<%@ page import="com.services.*" %>
-<%@ page import="java.util.List"%>
-<%@ page import="jakarta.ejb.EJB" %>
+<%@ page import="com.entities.Seance, com.entities.Place, java.util.List" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation - Pathé</title>
+    <title>Réservation </title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success-color: #22c55e;
-            --danger-color: #ef4444;
-            --warning-color: #fbbf24;
-            --disabled-color: #4b5563;
-            --background-color: #000000;
-            --card-background: #1a1a1a;
-            --text-primary: #ffffff;
-            --text-secondary: #a3a3a3;
-            --border-radius: 12px;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Styles CSS inchangés */
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-primary);
+            background-color: #000000;
+            color: #ffffff;
             line-height: 1.5;
             min-height: 100vh;
+            padding: 2rem;
         }
 
         .container {
@@ -59,14 +35,14 @@
 
         .film-info img {
             width: 100%;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
         }
 
         .seat-container {
-            background-color: var(--card-background);
+            background-color: #1a1a1a;
             padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             margin-top: 2rem;
         }
 
@@ -78,27 +54,27 @@
 
         .seat {
             aspect-ratio: 1;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
-            transition: var(--transition);
-            background-color: var(--warning-color);
+            transition: all 0.3s ease;
+            background-color: #fbbf24;
             color: #1f2937;
             border: 1px solid #f3f4f6;
         }
 
         .seat.occupied {
-            background-color: var(--disabled-color);
+            background-color: #4b5563;
             cursor: not-allowed;
             opacity: 0.7;
         }
 
         .seat.selected {
-            background-color: var(--success-color);
+            background-color: #22c55e;
             color: #ffffff;
             box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
             animation: pulse 0.5s ease;
@@ -116,10 +92,6 @@
             }
         }
 
-        .seat.handicap {
-            position: relative;
-        }
-
         .screen {
             height: 4px;
             background: linear-gradient(to right, transparent, #fbbf24, transparent);
@@ -133,7 +105,7 @@
             left: 50%;
             transform: translateX(-50%);
             top: 1rem;
-            color: var(--text-secondary);
+            color: #a3a3a3;
             font-size: 0.875rem;
         }
 
@@ -143,7 +115,7 @@
             gap: 1rem;
             margin: 2rem 0;
             font-size: 0.875rem;
-            color: var(--text-secondary);
+            color: #a3a3a3;
         }
 
         .legend-item {
@@ -154,33 +126,33 @@
         .legend-color {
             width: 1rem;
             height: 1rem;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .legend-color.available {
-            background-color: var(--warning-color);
+            background-color: #fbbf24;
         }
 
         .legend-color.occupied {
-            background-color: var(--disabled-color);
+            background-color: #4b5563;
         }
 
         .legend-color.selected {
-            background-color: var(--success-color);
+            background-color: #22c55e;
         }
 
         .btn-reserve {
             width: 100%;
             padding: 1rem;
-            background-color: var(--warning-color);
+            background-color: #fbbf24;
             color: black;
             font-size: 1rem;
             font-weight: 600;
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -188,13 +160,13 @@
         }
 
         .btn-reserve:hover {
-            background-color: var(--primary-hover);
+            background-color: #1d4ed8;
             transform: translateY(-2px);
-            box-shadow: var(--shadow-md), 0 8px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
         }
 
         .btn-reserve:disabled {
-            background-color: var(--disabled-color);
+            background-color: #4b5563;
             cursor: not-allowed;
             opacity: 0.5;
         }
@@ -221,43 +193,34 @@
     </style>
 </head>
 <body>
-<%@ include file="header.jsp" %>
-
     <div class="container">
         <!-- Partie gauche avec infos du film -->
         <div class="film-info">
-            <% Seance seance = (Seance) request.getAttribute("seance"); %>
-            <h1><%= seance.salle.film.getTitle() %></h1>
+            <%
+                Seance seance = (Seance) request.getAttribute("seance");
+            %>
+            <h1><%= seance.getSalle().getFilm().getTitle() %></h1>
             <div class="film-info-img">
-                <img src="<%= seance.salle.film.getPicture() %>" alt="<%= seance.salle.film.getTitle() %>">
+                <img src="<%= seance.getSalle().getFilm().getPicture() %>" alt="<%= seance.getSalle().getFilm().getTitle() %>">
             </div>
         </div>
 
         <div class="seat-container">
             <h1>Sélectionnez vos places</h1>
             <div class="seats">
-                <% 
+                <%
                     List<Place> places = (List<Place>) request.getAttribute("places");
-                    int rowCount = (int) request.getAttribute("rowCount");
-                    int colCount = (int) request.getAttribute("colCount");
-                    int placeIndex = 0;
-
-                    for (int row = 1; row <= rowCount; row++) {
-                        for (int col = 1; col <= colCount; col++) {
-                            if (placeIndex < places.size()) {
-                                Place place = places.get(placeIndex++);
-                                String seatClass = place.getStatus() == Place.Status.DISPONIBLE ? "available" : "occupied";
+                    for (Place place : places) {
+                        String seatClass = place.getStatus() == Place.Status.DISPONIBLE ? "seat available" : "seat occupied";
                 %>
-                    <div class="seat <%= seatClass %>" 
+                    <div class="<%= seatClass %>" 
                          data-place-id="<%= place.getIdPlace() %>" 
                          data-seance-id="<%= seance.getId() %>" 
                          data-row="<%= place.getRow() %>" 
                          data-col="<%= place.getCol() %>">
                         <%= place.getRow() %>-<%= place.getCol() %>
                     </div>
-                <% 
-                            }
-                        }
+                <%
                     }
                 %>
             </div>
@@ -279,75 +242,73 @@
                 </div>
             </div>
 
-         <form id="reservationForm" action="reservation" method="post">
-    <div class="selection-info" id="selectionInfo" style="display: none;">
-        <div class="seat-count">
-            <div class="seat-count-icon">✓</div>
-            <span>1 place réservée</span>
-        </div>
-        <div class="seat-number"></div>
-    </div>
-    <input type="hidden" name="placeId" id="placeId">
-    <input type="hidden" name="seanceId" id="seanceId" value="<%= seance.getId() %>">
+            <form id="reservationForm" action="paiement" method="post">
+                <div class="selection-info" id="selectionInfo" style="display: none;">
+                    <div class="seat-count">
+                        <div class="seat-count-icon">✓</div>
+                        <span>1 place réservée</span>
+                    </div>
+                    <div class="seat-number"></div>
+                </div>
+                <input type="hidden" name="placeId" id="placeId">
+                <input type="hidden" name="seanceId" id="seanceId" value="<%= seance.getId() %>">
 
-    <button type="submit" id="reserveButton" class="btn-reserve" disabled>
-        Réserver ma place
-    </button>
-</form>
+                <button type="submit" id="reserveButton" class="btn-reserve" disabled>
+                    Réserver ma place
+                </button>
+            </form>
         </div>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const seats = document.querySelectorAll('.seat:not(.occupied)');
-        const reserveButton = document.getElementById('reserveButton');
-        const selectionInfo = document.getElementById('selectionInfo');
-        const seatNumber = selectionInfo.querySelector('.seat-number');
-        let selectedSeat = null;
+        document.addEventListener('DOMContentLoaded', function() {
+            const seats = document.querySelectorAll('.seat:not(.occupied)');
+            const reserveButton = document.getElementById('reserveButton');
+            const selectionInfo = document.getElementById('selectionInfo');
+            const seatNumber = selectionInfo.querySelector('.seat-number');
+            let selectedSeat = null;
 
-        seats.forEach(seat => {
-            seat.addEventListener('click', function() {
-                if (seat.classList.contains('occupied')) return;
+            seats.forEach(seat => {
+                seat.addEventListener('click', function() {
+                    if (seat.classList.contains('occupied')) return;
 
-                // Désélectionner la place précédente
-                if (selectedSeat) {
-                    selectedSeat.classList.remove('selected');
+                    // Désélectionner la place précédente
+                    if (selectedSeat) {
+                        selectedSeat.classList.remove('selected');
+                    }
+
+                    // Sélectionner la nouvelle place
+                    selectedSeat = seat;
+                    selectedSeat.classList.add('selected');
+
+                    // Mettre à jour les informations
+                    const row = seat.getAttribute('data-row');
+                    const col = seat.getAttribute('data-col');
+                    const placeId = seat.getAttribute('data-place-id');
+                    const seanceId = seat.getAttribute('data-seance-id');
+
+                    // Mettre à jour les champs cachés
+                    document.getElementById('placeId').value = placeId;
+                    document.getElementById('seanceId').value = seanceId;
+
+                    // Afficher les informations de sélection
+                    selectionInfo.style.display = 'flex';
+                    seatNumber.textContent = `${row}-${col}`;
+
+                    // Activer le bouton de réservation
+                    reserveButton.disabled = false;
+                });
+            });
+
+            // Empêcher la soumission si aucune place n'est sélectionnée
+            document.getElementById('reservationForm').addEventListener('submit', function(e) {
+                const placeIdInput = document.getElementById('placeId');
+                if (!placeIdInput.value) {
+                    e.preventDefault();
+                    alert('Veuillez sélectionner une place avant de réserver.');
                 }
-
-                // Sélectionner la nouvelle place
-                selectedSeat = seat;
-                selectedSeat.classList.add('selected');
-
-                // Mettre à jour les informations
-                const row = seat.getAttribute('data-row');
-                const col = seat.getAttribute('data-col');
-                const placeId = seat.getAttribute('data-place-id');
-                const seanceId = seat.getAttribute('data-seance-id');
-
-                // Mettre à jour les champs cachés
-                document.getElementById('placeId').value = placeId;
-                document.getElementById('seanceId').value = seanceId;
-
-                // Afficher les informations de sélection
-                selectionInfo.style.display = 'flex';
-                seatNumber.textContent = `${row}-${col}`;
-
-                // Activer le bouton de réservation
-                reserveButton.disabled = false;
             });
         });
-
-        // Empêcher la soumission si aucune place n'est sélectionnée
-        document.getElementById('reservationForm').addEventListener('submit', function(e) {
-            const placeIdInput = document.getElementById('placeId');
-            if (!placeIdInput.value) {
-                e.preventDefault();
-                alert('Veuillez sélectionner une place avant de réserver.');
-            }
-        });
-    });
     </script>
-    <jsp:include page="footer.jsp"/>
-    
 </body>
 </html>

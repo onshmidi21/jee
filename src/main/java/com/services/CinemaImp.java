@@ -55,7 +55,12 @@ public class CinemaImp implements CinemaLocal {
         query.setParameter("name", name);
         return query.getResultList();
 	}
-
+	 @Override
+	    public List<Cinema> searchCinemaByName(String name) {
+	        return entityMgr.createQuery("SELECT c FROM Cinema c WHERE LOWER(c.nom) LIKE :name", Cinema.class)
+	                 .setParameter("name", "%" + name.toLowerCase() + "%")
+	                 .getResultList();
+	    }
 	@Override
 	
 	public List<Film> getFilmsByCinemaId(int cinemaId) {

@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "reservationServlet", urlPatterns = {"/reservation"})
 public class ReservationServlet extends HttpServlet {
@@ -22,16 +23,18 @@ public class ReservationServlet extends HttpServlet {
     @EJB
     private PlaceLocal placeLocal;
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int seanceId = Integer.parseInt(request.getParameter("seance_id"));
         Seance seance = seanceLocal.find(seanceId);
         
         if (seance == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Séance non trouvée.");
+            request.setAttribute("error", "Séance non trouvée.");
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
             return;
         }
 
-        // Passer les informations à la JSP
+        // Récupérer les places disponibles pour cette séance
         List<Place> places = placeLocal.findBySeance(seanceId);
         int colCount = 10; // Nombre de places par rangée (modifiable)
         int rowCount = (int) Math.ceil((double) places.size() / colCount); // Calcul du nombre de rangées
@@ -45,18 +48,17 @@ public class ReservationServlet extends HttpServlet {
         request.getRequestDispatcher("/reservation.jsp").forward(request, response);
     }
 
+    
+    
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         String placeIdParam = request.getParameter("placeId");
         String seanceIdParam = request.getParameter("seanceId");
 
-        // Ajoutez des logs pour déboguer
-        System.out.println("placeId reçu : " + placeIdParam);
-        System.out.println("seanceId reçu : " + seanceIdParam);
-
-        // Vérification des paramètres
         if (placeIdParam == null || seanceIdParam == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Les paramètres sont manquants.");
+            request.setAttribute("error", "Les paramètres sont manquants.");
+            request.getRequestDispatcher("/reservation.jsp").forward(request, response);
             return;
         }
 
@@ -64,29 +66,17 @@ public class ReservationServlet extends HttpServlet {
             int placeId = Integer.parseInt(placeIdParam);
             int seanceId = Integer.parseInt(seanceIdParam);
 
-            // Recherche des objets Place et Seance
-            Place place = placeLocal.find(placeId);
-            if (place == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Place introuvable.");
-                return;
-            }
+         
 
-            Seance seance = seanceLocal.find(seanceId);
-            if (seance == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Séance introuvable.");
-                return;
-            }
+            // Passer les informations à la page de paiement
+            request.setAttribute("placeId", placeId);
+            request.setAttribute("seanceId", seanceId);
 
-           
-
-            // Redirection vers la génération du ticket
-            request.setAttribute("place", place);
-            request.setAttribute("seance", seance);
-            request.getRequestDispatcher("/generateTicket").forward(request, response);
+            // Rediriger vers la page de paiement
+            request.getRequestDispatcher("/paiement").forward(request, response);
 
         } catch (NumberFormatException e) {
-            System.out.println("Erreur de conversion : " + e.getMessage());
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètres invalides.");
+            request.setAttribute("error", "Paramètres invalides.");
+            request.getRequestDispatcher("/reservation.jsp").forward(request, response);
         }
-    }
-}
+    }}

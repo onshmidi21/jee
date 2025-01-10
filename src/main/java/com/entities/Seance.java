@@ -25,7 +25,9 @@ public class Seance implements Serializable {
     public SalleDeProjection getSalle() {
         return salle;
     }
-
+    public void setSalle(SalleDeProjection s) {
+        this.salle=s;
+    }
  
 
 

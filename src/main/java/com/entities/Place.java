@@ -68,6 +68,6 @@ public class Place {
     }
 
     public enum Status {
-        DISPONIBLE, OCCUPEE
+        DISPONIBLE, OCCUPEE, EN_COURS,
     }
 }

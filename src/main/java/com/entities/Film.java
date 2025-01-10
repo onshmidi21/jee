@@ -9,8 +9,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +30,8 @@ public class Film implements Serializable
 
 	
 	private String title;
+	@OneToMany(mappedBy = "film")	 // Assurez-vous que le nom de la colonne correspond
+	private List<SalleDeProjection> salleDeProjection;
 	
 	private String type;
 	

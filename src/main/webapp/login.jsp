@@ -6,42 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
     <style>
-        /* Applique Flexbox au body */
+        /* Style général */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
-            display: flex;
-            flex-direction: column; /* Empêche les éléments d'aller sur plusieurs lignes */
-            height: 100vh; /* Utilise toute la hauteur de la fenêtre */
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Utilise toute la hauteur de la fenêtre */
         }
 
-        /* Conteneur principal pour centrer le contenu */
+        /* Header */
+        header {
+            background-color: #000; /* Noir */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* Conteneur principal pour centrer le formulaire */
         .container {
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
-            padding: 20px;
-            width: 300px;
-            text-align: center;
-            margin-top: 50px; /* Ajoute un espace au-dessus du formulaire */
-            margin-bottom: 50px; /* Ajoute un espace sous le formulaire */
-            flex: 1; /* Permet au formulaire de prendre de la place */
+            padding: 30px;
+            width: 100%;
+            max-width: 400px; /* Largeur maximale du formulaire */
+            margin: auto; /* Centre le conteneur */
+            flex: 1; /* Permet au conteneur de prendre l'espace disponible */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        /* Style du header */
-       
-        h1 {
+        /* Titre du formulaire */
+        .container h1 {
             color: #333333;
             font-size: 24px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
+        /* Labels et champs de formulaire */
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             text-align: left;
+            color: #555;
         }
 
         input[type="text"], input[type="password"] {
@@ -56,14 +75,15 @@
         }
 
         input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #4caf50;
+            border-color: #4caf50; /* Vert au focus */
         }
 
+        /* Bouton de connexion */
         button {
             background-color: #000000; /* Noir */
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
@@ -75,20 +95,34 @@
             background-color: #333333; /* Gris foncé au survol */
         }
 
+        /* Message d'erreur */
         p.error-message {
             color: red;
             font-size: 14px;
             margin-top: 10px;
             text-align: center;
         }
+
+        /* Footer */
+        footer {
+            background-color: #000; /* Noir */
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            margin-top: auto; /* Place le footer en bas */
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
     </style>
 </head>
-<%@ include file="header.jsp" %>
-
 <body>
+    <%@ include file="header.jsp" %>
 
     <header>
-        <!-- Ton contenu de header ici -->
         <h1>Bienvenue sur le site</h1>
     </header>
 
@@ -115,12 +149,8 @@
         %>
     </div>
 
-    <footer>
-        <!-- Ton contenu de footer ici -->
-        <p>&copy; 2024 Cinéma Application. Tous droits réservés.</p>
-    </footer>
+   
 
+    <jsp:include page="footer.jsp"/>
 </body>
-<jsp:include page="footer.jsp"/>
-
 </html>

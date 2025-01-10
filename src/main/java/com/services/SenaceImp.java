@@ -1,18 +1,22 @@
 package com.services;
 import com.entities.Seance;
 import com.entities.Film;
+import com.entities.Place;
 import com.entities.Cinema;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 @Stateless
 
 public class SenaceImp implements SeanceLocal {
 
-    @PersistenceContext
-    private EntityManager entityManager;  // Pour interagir avec la base de données
+    @PersistenceContext(unitName = "Cinema-ejbPU")
 
+    private EntityManager entityManager;  // Pour interagir avec la base de données
+    @Transactional
     // Créer une nouvelle séance
     @Override
     public void create(Seance seance) {
@@ -21,6 +25,7 @@ public class SenaceImp implements SeanceLocal {
 
     // Mettre à jour une séance existante
     @Override
+    @Transactional
     public void update(Seance seance) {
         entityManager.merge(seance);
     }
@@ -34,8 +39,9 @@ public class SenaceImp implements SeanceLocal {
     // Trouver une séance par son ID
     @Override
     public Seance find(int id) {
-        return entityManager.find(Seance.class, id);
-    }
+    	Seance seance = entityManager.find(Seance.class, id);
+        System.out.println("seance trouvée : " + seance.toString());
+        return seance;    }
 
     // Trouver toutes les séances
     @Override

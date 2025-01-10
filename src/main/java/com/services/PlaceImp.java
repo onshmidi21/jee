@@ -65,7 +65,10 @@ public class PlaceImp implements PlaceLocal {
 
     @Override
     public Place find(int id) {
-        return em.find(Place.class, id);
+    	Place place = em.find(Place.class, id);
+        System.out.println("Place trouvé : " + place);
+        return place;
+        		
     }
 
     @Override

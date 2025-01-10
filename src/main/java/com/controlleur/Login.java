@@ -18,7 +18,11 @@ public class Login extends HttpServlet {
 
     @EJB
     private UserLocal userService;
-
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Rediriger vers la page de login si la méthode GET est utilisée
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");
@@ -32,18 +36,22 @@ public class Login extends HttpServlet {
             User user = userService.findByLogin(login);
             session.setAttribute("user", user);
 
-            // Rediriger vers une page protégée
-            response.sendRedirect("films");
+            // Vérifier s'il y a une réservation en attente
+            String placeId = (String) session.getAttribute("reservationPlaceId");
+            String seanceId = (String) session.getAttribute("reservationSeanceId");
+
+            if (placeId != null && seanceId != null) {
+                // Rediriger vers la page de paiement
+                response.sendRedirect(request.getContextPath() + "/paiement?placeId=" + placeId + "&seanceId=" + seanceId);
+                session.removeAttribute("reservationPlaceId");
+                session.removeAttribute("reservationSeanceId");
+            } else {
+                // Rediriger vers la page d'accueil
+                response.sendRedirect(request.getContextPath() + "/films");
+            }
         } else {
             // Authentification échouée : retourner à la page de login avec un message d'erreur
             request.setAttribute("errorMessage", "Login ou mot de passe incorrect.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Rediriger vers la page de login si la méthode GET est utilisée
-        request.getRequestDispatcher("login.jsp").forward(request, response);
-    }
-}
+    }}

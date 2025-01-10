@@ -53,4 +53,5 @@ public class CinemaServlet extends HttpServlet {
         // Rediriger vers la page JSP
         request.getRequestDispatcher("/cinema.jsp").forward(request, response);
     }
+    
 }

@@ -1,13 +1,13 @@
 package com.controlleur;
 
-import java.io.IOException;
-
 import com.entities.Compte;
-import com.entities.Ticket;
+import com.entities.Place;
+import com.entities.Seance;
 import com.entities.User;
 import com.services.CompteLocal;
 import com.services.PaiementLocal;
-import com.services.TicketLocal;
+import com.services.PlaceLocal;
+import com.services.SeanceLocal;
 
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
@@ -17,130 +17,86 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 @WebServlet("/paiement")
 public class PaymentServlet extends HttpServlet {
-    
+
     @EJB
     private PaiementLocal paiementService;
-    
+
     @EJB
     private CompteLocal compteLocal;
-    
-    @EJB
-    private TicketLocal ticketLocal;
-    
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        
-        if (user == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
-            return;
-        }
 
-        String ticketIdParam = request.getParameter("ticketId");
-        
-        if (ticketIdParam == null || ticketIdParam.trim().isEmpty()) {
-            request.setAttribute("error", "ID du ticket manquant.");
-            request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+    @EJB
+    private PlaceLocal placeService;
+
+    @EJB
+    private SeanceLocal seanceService;
+
+    private static final Logger logger = Logger.getLogger(PaymentServlet.class.getName());
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        logger.info("Début du traitement du paiement");
+
+        String placeIdParam = request.getParameter("placeId");
+        String seanceIdParam = request.getParameter("seanceId");
+
+        if (placeIdParam == null || seanceIdParam == null) {
+            gererErreur(request, response, "Les paramètres sont manquants.", "/paiement.jsp");
             return;
         }
 
         try {
-            int ticketId = Integer.parseInt(ticketIdParam);
-            Ticket ticket = ticketLocal.find(ticketId);
-            
-            if (ticket == null) {
-                System.out.println("Ticket non trouvé pour l'ID: " + ticketId); // Debug log
-                request.setAttribute("error", "Ticket non trouvé pour l'ID: " + ticketId);
-                request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+            int placeId = Integer.parseInt(placeIdParam);
+            int seanceId = Integer.parseInt(seanceIdParam);
+
+            if (placeId <= 0 || seanceId <= 0) {
+                gererErreur(request, response, "ID de place ou de séance invalide.", "/paiement.jsp");
                 return;
             }
 
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("user") == null) {
+                gererErreur(request, response, "Vous devez être connecté pour effectuer un paiement.", "/login.jsp");
+                return;
+            }
+
+            User user = (User) session.getAttribute("user");
             Compte compte = compteLocal.findByUser(user);
+
             if (compte == null) {
-                request.setAttribute("error", "Compte non trouvé pour l'utilisateur.");
-                request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+                gererErreur(request, response, "Compte non trouvé.", "/paiement.jsp");
                 return;
             }
 
-            // Définir les attributs pour la page JSP
-            request.setAttribute("ticket", ticket);
-            request.setAttribute("compte", compte);
-            
-            // Vérification du solde
-            if (compte.getSolde() >= ticket.getSeance().getTarif()) {
-                // Rediriger vers la page de paiement avec les informations
-                request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+            boolean paiementReussi = paiementService.effectuerPaiementAvecPlaceEtSeance(compte.getId(), placeId, seanceId);
+
+            if (paiementReussi) {
+                Place place = placeService.find(placeId);
+                Seance seance = seanceService.find(seanceId);
+
+                request.setAttribute("place", place);
+                request.setAttribute("seance", seance);
+                request.getRequestDispatcher("/generateTicket").forward(request, response);
             } else {
-                request.setAttribute("error", "Solde insuffisant. Veuillez vérifier votre compte.");
-                request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+                gererErreur(request, response, "Paiement échoué. Solde insuffisant.", "/paiement.jsp");
             }
-
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "Format d'ID de ticket invalide: " + ticketIdParam);
-            request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+            logger.severe("Paramètres invalides : " + e.getMessage());
+            gererErreur(request, response, "Paramètres invalides.", "/paiement.jsp");
         } catch (Exception e) {
-            System.out.println("Erreur lors du traitement: " + e.getMessage()); // Debug log
-            request.setAttribute("error", "Une erreur s'est produite lors du traitement du paiement.");
-            request.getRequestDispatcher("/paiement.jsp").forward(request, response);
+            logger.severe("Erreur lors du paiement : " + e.getMessage());
+            gererErreur(request, response, "Une erreur s'est produite lors du paiement.", "/paiement.jsp");
         }
-    } @Override
-            protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                    throws ServletException, IOException {
+    }
 
-                HttpSession session = request.getSession();
-                User user = (User) session.getAttribute("user");
-
-                if (user == null) {
-                    response.sendRedirect(request.getContextPath() + "/login.jsp");
-                    return;
-                }
-
-                String ticketIdParam = request.getParameter("ticketId");
-
-                if (ticketIdParam == null || ticketIdParam.trim().isEmpty()) {
-                    request.setAttribute("error", "ID du ticket manquant.");
-                    request.getRequestDispatcher("/paiement.jsp").forward(request, response);
-                    return;
-                }
-
-                try {
-                    int ticketId = Integer.parseInt(ticketIdParam);
-                    Ticket ticket = ticketLocal.find(ticketId);
-
-                    if (ticket == null) {
-                        request.setAttribute("error", "Ticket non trouvé pour l'ID: " + ticketId);
-                        request.getRequestDispatcher("/paiement.jsp").forward(request, response);
-                        return;
-                    }
-
-                    Compte compte = compteLocal.findByUser(user);
-                    if (compte == null) {
-                        request.setAttribute("error", "Compte non trouvé pour l'utilisateur.");
-                        request.getRequestDispatcher("/paiement.jsp").forward(request, response);
-                        return;
-                    }
-
-                    // Vérifier que le solde est suffisant et effectuer le paiement
-                    if (compte.getSolde() >= ticket.getSeance().getTarif()) {
-                        // Déduire le tarif du compte et mettre à jour le ticket comme payé
-                        paiementService.effectuerPaiementAvecTicket(compte.getId(), ticketId);
-                        request.setAttribute("success", "Le paiement a été effectué avec succès.");
-                        request.getRequestDispatcher("/confirmation.jsp").forward(request, response);
-                    } else {
-                        request.setAttribute("error", "Solde insuffisant. Veuillez vérifier votre compte.");
-                        request.getRequestDispatcher("/paiement.jsp").forward(request, response);
-                    }
-
-                } catch (NumberFormatException e) {
-                    request.setAttribute("error", "Format d'ID de ticket invalide: " + ticketIdParam);
-                    request.getRequestDispatcher("/paiement.jsp").forward(request, response);
-                } catch (Exception e) {
-                    request.setAttribute("error", "Une erreur s'est produite lors du traitement du paiement.");
-                    request.getRequestDispatcher("/paiement.jsp").forward(request, response);
-                }
-            }}
+    private void gererErreur(HttpServletRequest request, HttpServletResponse response, String messageErreur, String destination)
+            throws ServletException, IOException {
+        request.setAttribute("error", messageErreur);
+        request.getRequestDispatcher(destination).forward(request, response);
+    }
+}

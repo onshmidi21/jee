@@ -17,4 +17,6 @@ public interface CinemaLocal {
 	List<Cinema> findbyName(String name);
 	List<Cinema> findAll();
 	 public List<Film> getFilmsByCinemaId(int cinemaId) ;
+		List<Cinema> searchCinemaByName(String name);
+
 }
