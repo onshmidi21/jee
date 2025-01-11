@@ -122,10 +122,7 @@
 <body>
     <%@ include file="header.jsp" %>
 
-    <header>
-        <h1>Bienvenue sur le site</h1>
-    </header>
-
+    
     <div class="container">
         <h1>Connexion</h1>
         <form action="login" method="post">

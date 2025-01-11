@@ -5,208 +5,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation </title>
+    <title>Réservation</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Styles CSS inchangés */
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-            line-height: 1.5;
-            min-height: 100vh;
-            padding: 2rem;
-        }
+      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    color: #000000;
+}
 
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 2rem;
-        }
+body {
+    background: #000000;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
+.container {
+    max-width: 1280px;
+    margin: 2rem auto; /* Marge en haut et en bas */
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    flex: 1;
+}
 
-        .film-info img {
-            width: 100%;
-            border-radius: 12px;
-        }
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+     color: #ffffff;
+}
 
-        .seat-container {
-            background-color: #1a1a1a;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-            margin-top: 2rem;
-        }
+.film-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-        .seats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-            gap: 0.5rem;
-        }
+.film-info img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
 
-        .seat {
-            aspect-ratio: 1;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background-color: #fbbf24;
-            color: #1f2937;
-            border: 1px solid #f3f4f6;
-        }
+.seat-container {
+    background-color: #1a1a1a;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
-        .seat.occupied {
-            background-color: #4b5563;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+.seats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    gap: 0.5rem;
+}
 
-        .seat.selected {
-            background-color: #22c55e;
-            color: #ffffff;
-            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
-            animation: pulse 0.5s ease;
-        }
+.seat {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fbbf24;
+    color: #1f2937;
+    border: 1px solid #f3f4f6;
+}
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
+.seat.occupied {
+    background-color: #4b5563;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
 
-        .screen {
-            height: 4px;
-            background: linear-gradient(to right, transparent, #fbbf24, transparent);
-            margin: 2rem 0;
-            position: relative;
-        }
+.seat.selected {
+    background-color: #22c55e;
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.4);
+    animation: pulse 0.5s ease;
+}
 
-        .screen::after {
-            content: 'Écran';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 1rem;
-            color: #a3a3a3;
-            font-size: 0.875rem;
-        }
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
 
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            font-size: 0.875rem;
-            color: #a3a3a3;
-        }
+.screen {
+    height: 4px;
+    background: linear-gradient(to right, transparent, #fbbf24, transparent);
+    margin: 2rem 0;
+    position: relative;
+}
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-        }
+.screen::after {
+    content: 'Écran';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1rem;
+    color: #a3a3a3;
+    font-size: 0.875rem;
+}
 
-        .legend-color {
-            width: 1rem;
-            height: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    font-size: 0.875rem;
+    color: #a3a3a3;
+}
 
-        .legend-color.available {
-            background-color: #fbbf24;
-        }
+.legend-item {
+    display: flex;
+    align-items: center;
+     color: #ffffff;
+}
 
-        .legend-color.occupied {
-            background-color: #4b5563;
-        }
+.legend-color {
+    width: 1rem;
+    height: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
 
-        .legend-color.selected {
-            background-color: #22c55e;
-        }
+.legend-color.available {
+    background-color: #fbbf24;
+}
 
-        .btn-reserve {
-            width: 100%;
-            padding: 1rem;
-            background-color: #fbbf24;
-            color: black;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
+.legend-color.occupied {
+    background-color: #4b5563;
+}
 
-        .btn-reserve:hover {
-            background-color: #1d4ed8;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        }
+.legend-color.selected {
+    background-color: #22c55e;
+}
 
-        .btn-reserve:disabled {
-            background-color: #4b5563;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
+.btn-reserve {
+    width: 100%;
+    padding: 1rem;
+    background-color: #fbbf24;
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
 
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
+.btn-reserve:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+}
 
-            .seats {
-                grid-template-columns: repeat(8, 1fr);
-            }
+.btn-reserve:disabled {
+    background-color: #4b5563;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
 
-            h1 {
-                font-size: 1.5rem;
-            }
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
 
-            .legend {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-        }
+    .seats {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        color :#ffff
+    }
+
+    .legend {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
     </style>
 </head>
 <body>
+    <%@ include file="header.jsp" %>
+
     <div class="container">
         <!-- Partie gauche avec infos du film -->
         <div class="film-info">
             <%
                 Seance seance = (Seance) request.getAttribute("seance");
             %>
-            <h1><%= seance.getSalle().getFilm().getTitle() %></h1>
             <div class="film-info-img">
                 <img src="<%= seance.getSalle().getFilm().getPicture() %>" alt="<%= seance.getSalle().getFilm().getTitle() %>">
             </div>
         </div>
 
         <div class="seat-container">
-            <h1>Sélectionnez vos places</h1>
+            <h1 >Sélectionnez vos places</h1>
             <div class="seats">
                 <%
                     List<Place> places = (List<Place>) request.getAttribute("places");
@@ -311,4 +322,6 @@
         });
     </script>
 </body>
+    <%@ include file="footer.jsp" %>
+
 </html>

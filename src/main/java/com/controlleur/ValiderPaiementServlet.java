@@ -20,8 +20,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@WebServlet("/paiement")
-public class PaymentServlet extends HttpServlet {
+@WebServlet("/validerPaiement")
+public class ValiderPaiementServlet extends HttpServlet {
 
     @EJB
     private PaiementLocal paiementService;
@@ -35,18 +35,29 @@ public class PaymentServlet extends HttpServlet {
     @EJB
     private SeanceLocal seanceService;
 
-    private static final Logger logger = Logger.getLogger(PaymentServlet.class.getName());
+    private static final Logger logger = Logger.getLogger(ValiderPaiementServlet.class.getName());
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        logger.info("Début du traitement de la réservation");
+        logger.info("Début de la validation du paiement");
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            logger.warning("Utilisateur non authentifié");
+            gererErreur(request, response, "Veuillez vous connecter pour effectuer un paiement.", "/login.jsp");
+            return;
+        }
+
+        // Récupérer l'utilisateur de la session
+        User user = (User) session.getAttribute("user");
+
+        // Récupérer les paramètres
         String placeIdParam = request.getParameter("placeId");
         String seanceIdParam = request.getParameter("seanceId");
 
         if (placeIdParam == null || seanceIdParam == null) {
-            gererErreur(request, response, "Les paramètres sont manquants.", "/paiement.jsp");
+            gererErreur(request, response, "Les paramètres sont manquants.", "/confirmationPaiement.jsp");
             return;
         }
 
@@ -54,31 +65,35 @@ public class PaymentServlet extends HttpServlet {
             int placeId = Integer.parseInt(placeIdParam);
             int seanceId = Integer.parseInt(seanceIdParam);
 
-            if (placeId <= 0 || seanceId <= 0) {
-                gererErreur(request, response, "ID de place ou de séance invalide.", "/paiement.jsp");
-                return;
-            }
-
             // Récupérer la place et la séance
             Place place = placeService.find(placeId);
             Seance seance = seanceService.find(seanceId);
 
-            if (place == null || seance == null) {
-                gererErreur(request, response, "Place ou séance non trouvée.", "/paiement.jsp");
+          
+
+            // Récupérer le compte de l'utilisateur
+            Compte compte = compteLocal.findByUser(user);
+
+            if (compte == null) {
+                gererErreur(request, response, "Compte utilisateur introuvable.", "/confirmationPaiement.jsp");
                 return;
             }
 
-            // Passer les informations à la JSP pour afficher les détails de la réservation
-            request.setAttribute("place", place);
-            request.setAttribute("seance", seance);
-            request.getRequestDispatcher("/confirmationPaiement.jsp").forward(request, response);
+            // Effectuer le paiement
+            boolean paiementReussi = paiementService.effectuerPaiementAvecPlaceEtSeance(compte.getId(), placeId, seanceId);
 
+            if (paiementReussi) {
+                // Rediriger vers la page de génération du ticket
+                response.sendRedirect(request.getContextPath() + "/generateTicket?placeId=" + placeId + "&seanceId=" + seanceId);
+            } else {
+                gererErreur(request, response, "Paiement échoué. Solde insuffisant.", "/confirmationPaiement.jsp");
+            }
         } catch (NumberFormatException e) {
             logger.severe("Paramètres invalides : " + e.getMessage());
-            gererErreur(request, response, "Paramètres invalides.", "/paiement.jsp");
+            gererErreur(request, response, "Paramètres invalides.", "/confirmationPaiement.jsp");
         } catch (Exception e) {
-            logger.severe("Erreur lors de la réservation : " + e.getMessage());
-            gererErreur(request, response, "Une erreur s'est produite lors de la réservation.", "/paiement.jsp");
+            logger.severe("Erreur lors du paiement : " + e.getMessage());
+            gererErreur(request, response, "Une erreur s'est produite lors du paiement.", "/confirmationPaiement.jsp");
         }
     }
 

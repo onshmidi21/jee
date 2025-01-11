@@ -1,19 +1,27 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="com.entities.*" %>
+<%@ page import="com.entities.Cinema" %>
+<%@ page import="com.entities.Film" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Cinémas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* General Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Styles généraux */
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f8f8f8;
-            color: #333;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         h1, h2 {
@@ -22,108 +30,120 @@
             font-size: 2em;
         }
 
-        h3 {
-            font-size: 1.4em;
-            color: #333;
-        }
-
-        /* Cinema list styles */
-        .cinema-list {
-            margin: 20px auto;
+        /* Conteneur de la liste des cinémas */
+        .cinema-list-container {
             width: 90%;
             max-width: 1200px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1a1a1a; /* Fond sombre pour le conteneur */
+            border-radius: 10px;
         }
 
+        /* Liste des cinémas en vertical */
+        .cinema-list {
+            display: flex;
+            flex-direction: column; /* Afficher en vertical */
+            gap: 20px; /* Espace entre les cartes */
+        }
+
+        /* Style de chaque carte de cinéma */
         .cinema-card {
-            display: block;
-            width: 30%;
-            padding: 20px;
             background-color: #fff;
-            color: #333;
-            text-decoration: none;
-            margin-bottom: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%; /* Prendre toute la largeur */
+            padding: 30px; /* Augmenter le padding pour une carte plus grande */
             text-align: center;
+            transition: transform 0.3s ease;
         }
 
         .cinema-card:hover {
-            background-color: #e50914;
-            color: #fff;
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         .cinema-card h3 {
-            font-size: 1.6em;
-            margin: 0;
-            color: #fff;
+            font-size: 2em; /* Taille de police plus grande */
+            margin: 0 0 15px;
+            color: #333;
         }
 
         .cinema-card p {
             margin: 10px 0;
-            font-size: 1em;
+            font-size: 1.2em; /* Taille de police plus grande */
+            color: #666;
         }
 
-        /* Film list styles */
+        /* Styles pour la liste des films */
+        .film-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        /* Style de chaque carte de film */
         .film {
             background-color: #fff;
-            padding: 20px;
-            margin: 15px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 250px;
+            text-align: center;
+            transition: transform 0.3s ease;
         }
 
         .film:hover {
-            background-color: #f1f1f1;
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .film img {
+            width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .film h3 {
+            font-size: 1.4em;
+            margin: 10px 0;
+            color: #333;
         }
 
         .film p {
             margin: 5px 0;
-            font-size: 1em;
+            font-size: 0.9em;
+            color: #666;
+            padding: 0 10px;
         }
 
+        .film p strong {
+            color: #333;
+        }
+
+        /* Message lorsqu'aucun film n'est trouvé */
         .message {
             text-align: center;
-            color: #888;
             font-size: 1.2em;
+            color: #666;
+            margin: 20px 0;
         }
 
-        /* Responsive design */
+        /* Responsive design pour les films */
         @media (max-width: 768px) {
-            .cinema-card {
-                width: 45%;
-                margin-bottom: 20px;
-            }
-
             .film {
-                padding: 15px;
-                font-size: 0.9em;
+                width: 200px;
+            }
+
+            .film h3 {
+                font-size: 1.2em;
+            }
+
+            .film p {
+                font-size: 0.8em;
             }
         }
-
-        @media (max-width: 480px) {
-            .cinema-card {
-                width: 100%;
-            }
-        }
-
-        /* Adaptation des images */
-        .film img {
-            width: 100%;
-            height: auto;
-            max-width: 300px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
     </style>
 </head>
 <body>
@@ -131,59 +151,63 @@
 
 <h1>Liste des Cinémas</h1>
 
-<div class="cinema-list">
-    <%
-        List<Cinema> cinemas = (List<Cinema>) request.getAttribute("cinemas");
-        if (cinemas != null && !cinemas.isEmpty()) {
-            for (Cinema cinema : cinemas) {
-    %>
-        <a href="?cinemaId=<%= cinema.getId() %>" class="cinema-card">
-            <h3><%= cinema.getName() %></h3>
-            <p><%= cinema.getAdress() %></p>
-        </a>
-    <%
+<div class="cinema-list-container">
+    <div class="cinema-list">
+        <%
+            List<Cinema> cinemas = (List<Cinema>) request.getAttribute("cinemas");
+            String selectedCinemaId = request.getParameter("cinemaId");
+            if (cinemas != null && !cinemas.isEmpty()) {
+                for (Cinema cinema : cinemas) {
+        %>
+            <div class="cinema-card">
+                <h3><%= cinema.getName() %></h3>
+                <p><%= cinema.getAdress() %></p>
+                <a href="?cinemaId=<%= cinema.getId() %>" class="button">Voir les films</a>
+
+                <%
+                    // Afficher les films uniquement pour le cinéma sélectionné
+                    if (selectedCinemaId != null && selectedCinemaId.equals(String.valueOf(cinema.getId()))) {
+                        List<Film> films = (List<Film>) request.getAttribute("films");
+                        if (films != null && !films.isEmpty()) {
+                %>
+                    <h2>Films disponibles dans ce cinéma</h2>
+                    <div class="film-list">
+                        <%
+                            for (Film film : films) {
+                        %>
+                            <div class="film">
+                                <img src="<%= film.getPicture() %>" alt="<%= film.getTitle() %>">
+                                <h3><%= film.getTitle() %></h3>
+                                <p><strong>Description :</strong> <%= film.getDescription() != null ? film.getDescription() : "Non spécifiée." %></p>
+                                <p><strong>Réalisateur :</strong> <%= film.getDirector() %></p>
+                                <p><strong>Durée :</strong> <%= film.getDuration() %> minutes</p>
+                            </div>
+                        <%
+                            }
+                        %>
+                    </div>
+                <%
+                        } else {
+                %>
+                    <p class="message">Aucun film trouvé pour ce cinéma.</p>
+                <%
+                        }
+                    }
+                %>
+            </div>
+        <%
+                }
+            } else {
+        %>
+            <div class="no-cinemas">
+                Aucun cinéma disponible.
+            </div>
+        <%
             }
-        } else {
-    %>
-        <p class="message">Aucun cinéma disponible.</p>
-    <%
-        }
-    %>
+        %>
+    </div>
 </div>
 
-<%
-    // Vérifier si des films sont disponibles pour un cinéma sélectionné
-    List<Film> films = (List<Film>) request.getAttribute("films");
-    if (films != null) {
-%>
-    <h2>Films disponibles dans ce cinéma</h2>
-    <div class="film-list">
-    <%
-        if (!films.isEmpty()) {
-            for (Film film : films) {
-    %>
-        <div class="film">
-        <img src="<%= film.getPicture() %>" alt="<%= film.getTitle() %>">
-        
-            <h3><%= film.getTitle() %></h3>
-            <p><strong>Description :</strong> <%= film.getDescription() != null ? film.getDescription() : "Non spécifiée." %></p>
-            <p><strong>Réalisateur :</strong> <%= film.getDirector() %></p>
-            <p><strong>Durée :</strong> <%= film.getDuration() %> minutes</p>
-        </div>
-    <%
-            }
-        } else {
-    %>
-        <p class="message">Aucun film trouvé pour ce cinéma.</p>
-    <%
-        }
-    %>
-    </div>
-<%
-    }
-%>
-
-</body>
 <%@ include file="footer.jsp" %>
-
+</body>
 </html>

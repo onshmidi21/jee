@@ -2,7 +2,9 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Footer</title>
+    <title>Page avec Footer</title>
+    <!-- Ajoutez Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,7 +14,7 @@
         }
 
         footer {
-            background: #1a1a1a;
+            background: #FFA500;
             color: #fff;
             padding: 50px 0 20px;
         }
@@ -22,22 +24,27 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
+            gap: 40px; /* Espacement entre les colonnes */
             padding: 0 20px;
         }
 
+        .footer-section {
+            padding: 10px;
+        }
+
         .footer-section h3 {
-            color: #e50914;
+            color: #ffff;
             margin-bottom: 20px;
             font-size: 18px;
         }
 
         .footer-section ul {
             list-style: none;
+            padding: 0;
         }
 
         .footer-section ul li {
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* Espacement entre les éléments de la liste */
         }
 
         .footer-section ul li a {
@@ -63,14 +70,14 @@
 
         .social-icons {
             display: flex;
-            gap: 15px;
+            gap: 20px; /* Espacement entre les icônes */
             margin-top: 20px;
         }
 
         .social-icons a {
             color: #fff;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 24px; /* Taille des icônes */
             transition: color 0.3s;
         }
 
@@ -80,57 +87,82 @@
 
         @media (max-width: 768px) {
             .footer-content {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, 1fr); /* Deux colonnes sur les écrans moyens */
+                gap: 30px;
             }
         }
 
         @media (max-width: 480px) {
             .footer-content {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Une colonne sur les petits écrans */
+                gap: 20px;
+            }
+
+            .social-icons {
+                justify-content: center; /* Centrer les icônes sur les petits écrans */
             }
         }
     </style>
 </head>
 <body>
+  
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3> CINÉMA</h3>
+                <h3>LES NOUVEAUTÉS À L'AFFICHE</h3>
                 <ul>
-                    <li><a href="#">À propos</a></li>
-                    <li><a href="#">Nos cinémas</a></li>
-                    <li><a href="#">Offres et promotions</a></li>
+                    <li><a href="#">Mufass : Le Roi Lion</a></li>
+                    <li><a href="#">SONIC 3 - le film</a></li>
+                    <li><a href="#">Valana 2</a></li>
+                    <li><a href="#">Un ours dans le Jura</a></li>
+                    <li><a href="#">Firma accueilement au cinéma</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h3>INFORMATIONS</h3>
+                <h3>CHIÈMAS DANS VOS VILLES</h3>
                 <ul>
-                    <li><a href="#">CGV</a></li>
-                    <li><a href="#">Mentions légales</a></li>
-                    <li><a href="#">Politique de confidentialité</a></li>
-                    <li><a href="#">Cookies</a></li>
+                    <li><a href="#">Chiérans à Paris</a></li>
+                    <li><a href="#">Chiérans à Lyon</a></li>
+                    <li><a href="#">Chiérans à Marseille</a></li>
+                    <li><a href="#">Chiérans à Toulouse</a></li>
+                    <li><a href="#">Chiérans à Nice</a></li>
+                    <li><a href="#">Chiérans autour de moi</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h3>AIDE</h3>
+                <h3>À PROPOS</h3>
                 <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Plan du site</a></li>
-                    <li><a href="#">Guide d'utilisation</a></li>
+                    <li><a href="#">Critièbres</a></li>
+                    <li><a href="#">CritiéCartes</a></li>
+                    <li><a href="#">IMAX</a></li>
+                    <li><a href="#">Dolly Cinema</a></li>
+                    <li><a href="#">40X</a></li>
+                    <li><a href="#">ScreenX</a></li>
+                    <li><a href="#">Metropolitan Opera</a></li>
+                    <li><a href="#">Nos expériences</a></li>
+                    <li><a href="#">Toutes les actualités</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3>SUIVEZ-NOUS</h3>
                 <div class="social-icons">
-                    <a href="#" title="Facebook">FB</a>
-                    <a href="#" title="Twitter">TW</a>
-                    <a href="#" title="Instagram">IG</a>
+                    <!-- Icône Facebook -->
+                    <a href="https://facebook.com" target="_blank" title="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <!-- Icône Instagram -->
+                    <a href="https://instagram.com" target="_blank" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <!-- Icône Email -->
+                    <a href="mailto:contact@cinema.com" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024  Cinéma application. Tous droits réservés.</p>
+            <p>&copy; 2025 Cinéma application. Tous droits réservés.</p>
         </div>
     </footer>
 </body>

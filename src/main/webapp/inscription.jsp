@@ -12,80 +12,6 @@
             font-family: Arial, sans-serif;
         }
 
-        header {
-            background: #000;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .top-header {
-            background: #1a1a1a;
-            padding: 5px 0;
-        }
-
-        .top-header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: flex-end;
-            padding: 0 20px;
-        }
-
-        .top-header a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 14px;
-            margin-left: 20px;
-        }
-
-        .main-header {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-        }
-
-        .logo {
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .main-nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .main-nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 30px;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-
-        .main-nav a:hover {
-            color: #e50914;
-        }
-
-        .search-bar {
-            position: relative;
-            margin-left: 30px;
-        }
-
-        .search-bar input {
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: none;
-            width: 200px;
-            background: #333;
-            color: #fff;
-        }
-
         /* Style du formulaire */
         #corps {
             display: flex;
@@ -104,14 +30,29 @@
             max-width: 600px;
         }
 
-        .input {
-            margin-bottom: 15px;
-            padding: 10px;
+       
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        input[type="text"], input[type="password"] {
             width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            font-size: 14px;
             box-sizing: border-box;
+            transition: border-color 0.3s ease;
         }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #4caf50;
+        }
+       
 
         .publier {
             background-color: #000;
@@ -136,6 +77,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <%@ include file="header.jsp" %>
@@ -153,7 +95,7 @@
                     <input class="input" required placeholder="Prénom" type="text" name="prenom" id="prenom" size="30" value="">
 
                     <label for="email"><b class="input">Email</b></label>
-                    <input class="input" placeholder="exemple@exemple.com" required type="email" name="email" id="email" size="30" value="">
+                    <input class="input" placeholder="Adresse Email" required type="text" name="adresse email" id="adresse email" size="30" value="">
 
                     <label for="adresse"><b class="input">Adresse</b></label>
                     <input class="input" placeholder="Adresse Postale" required type="text" name="adresse" id="adresse" size="30" value="">

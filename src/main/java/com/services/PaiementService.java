@@ -1,5 +1,6 @@
 package com.services;
 
+
 import com.entities.Compte;
 import com.entities.Place;
 import com.entities.Ticket;
@@ -48,27 +49,31 @@ public class PaiementService implements PaiementLocal {
     }
     @Override
     public boolean effectuerPaiementAvecPlaceEtSeance(int compteId, int placeId, int seanceId) {
-        // Récupérer la place et la séance
-        Place place = placeservice.find(placeId) ;
-        Seance seance =seanceservice.find(seanceId);
+    	    Compte compte = compteService.find(compteId);
+    	    Place place = placeservice.find(placeId);
+    	    Seance seance = seanceservice.find(seanceId);
 
-        if (place == null || seance == null) {
-            throw new IllegalArgumentException("Place ou séance non trouvée");
-        }
+    	    if (compte == null || place == null || seance == null) {
+    	    	System.err.println("Erreur : Compte, place ou séance non trouvé.");
+    	        return false;
+    	    }
 
-        // Vérifier le montant de la séance
-        Float montant = (float) seance.getTarif();
-        if (montant == null || montant <= 0.0f) {
-            throw new IllegalArgumentException("Montant invalide pour la séance");
-        }
+    	    // Vérifier le solde du compte
+    	    if (compte.getSolde() < seance.getTarif()) {
+    	    	System.err.println("Solde insuffisant.");
+    	        return false;
+    	    }
 
-        // Mettre à jour le statut de la place à "OCCUPEE"
-        place.setStatus(Status.OCCUPEE);
-        entityMgr.merge(place);
+    	    // Débiter le compte
+    	    compte.setSolde(compte.getSolde() - seance.getTarif());
+    	    compteService.update(compte);
 
-        // Effectuer le paiement
-        return effectuerPaiement(compteId, montant);
-    }
+    	    // Marquer la place comme occupée
+    	    place.setStatus(Status.OCCUPEE);
+    	    placeservice.update(place);
+
+    	    return true;
+    	}
 
     @Override
     public boolean crediterCompte(int compteId, Float montant) {

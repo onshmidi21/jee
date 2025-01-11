@@ -7,22 +7,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Films - Liste et Film Aléatoire</title>
+    <title> Films </title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Styles généraux */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f5f5;
+        * {
             margin: 0;
             padding: 0;
-        }
-
-        header, footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 15px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         h1 {
@@ -32,55 +26,111 @@
             margin-top: 20px;
         }
 
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px;
-        }
-
-        .card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 250px;
+        /* Conteneur de la liste des films avec flèches */
+        .film-list-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            position: relative;
             overflow: hidden;
-            text-align: center;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-            margin-bottom: 20px;
         }
 
-        .card img {
+        /* Masquer la barre de défilement */
+        .film-list-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .film-list-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Flèches de défilement */
+        .scroll-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .scroll-arrow:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .scroll-arrow.left {
+            left: 10px;
+        }
+
+        .scroll-arrow.right {
+            right: 10px;
+        }
+
+        /* Liste des films */
+        .film-list {
+            display: flex;
+            gap: 20px;
+            padding: 10px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Style de chaque film */
+        .film-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            min-width: 250px;
+            flex: 0 0 auto;
+            margin-right: 20px;
+        }
+
+        /* Image du film */
+        .film-card img {
             width: 100%;
             height: 300px;
             object-fit: cover;
-            border-bottom: 2px solid #ddd;
+            display: block;
         }
 
-        .card-content {
+        /* Contenu superposé sur l'image */
+        .film-card .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
             padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
         }
 
-        .card h3 {
-            font-size: 1.5rem;
-            color: #333;
-            margin: 10px 0;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
+        /* Effet de survol pour afficher le contenu */
+        .film-card:hover .card-content {
+            transform: translateY(0);
         }
 
-        .card p {
-            color: #555;
-            font-size: 1rem;
-            margin-bottom: 10px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
+        /* Style du texte */
+        .film-card h3 {
+            font-size: 1.4em;
+            margin: 0 0 10px;
         }
 
-        .card .btn-details {
+        .film-card p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
+        .film-card .btn-details {
             background-color: #f39c12;
             color: white;
             border: none;
@@ -89,121 +139,78 @@
             border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
             transition: background-color 0.3s ease;
         }
 
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .card .btn-details:hover {
+        .film-card .btn-details:hover {
             background-color: #e67e22;
-        }
-
-        .description {
-            max-width: 200px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .no-films {
-            text-align: center;
-            color: #e50914;
-            font-size: 1.2rem;
-            padding: 20px;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 5px;
-        }
-
-        /* Styles pour le film aléatoire */
-        .random-film-container {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .random-film-container h2 {
-            font-size: 2rem;
-        }
-
-        .random-film-image img {
-            max-width: 500px;
-            height: auto;
-            margin: 20px 0;
-            border-radius: 10px;
-        }
-
-        .random-film-button {
-            background-color: #ff5733;
-            color: white;
-            padding: 18px 40px;
-            text-decoration: none;
-            font-size: 1.3em;
-            border-radius: 30px;
-            box-shadow: 0 4px 15px rgba(255, 87, 51, 0.5);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .random-film-button:hover {
-            background-color: #e04a29;
-            box-shadow: 0 6px 20px rgba(255, 87, 51, 0.7);
         }
 
         /* Media Queries for responsiveness */
         @media (max-width: 768px) {
-            .card-container {
-                flex-direction: column;
-                align-items: center;
+            .film-card {
+                min-width: 200px;
             }
         }
     </style>
 </head>
+
 <body>
+    <%@ include file="header.jsp" %>
 
-<%@ include file="header.jsp" %>
+    <!-- Film aléatoire -->
+    <%@ include file="filmRandom.jsp" %>
 
-<!-- Film aléatoire -->
-<%@ include file="filmRandom.jsp" %>
+    <!-- Liste des films -->
+    <h1>Liste des Films</h1>
 
-<!-- Liste des films -->
-<h1>Liste des Films</h1>
-
-<div class="card-container">
-    <% 
-        List<Film> films = (List<Film>) request.getAttribute("ListFilms");
-        if (films != null && !films.isEmpty()) {
-            for (Film film : films) {
-    %>
-    <div class="card">
-        <img src="<%= film.getPicture() %>" alt="<%= film.getTitle() %>">
-        <div class="card-content">
-            <h3><%= film.getTitle() %></h3>
-            <p><strong>Type:</strong> <%= film.getType() %></p>
-            <p><strong>Réalisateur:</strong> <%= film.getDirector() %></p>
-            <p><strong>Durée:</strong> <%= film.getDuration() %> min</p>
-            <p><strong>Date de sortie:</strong> <%= new SimpleDateFormat("dd MMM yyyy").format(film.getDate()) %></p>
-            <p class="description"><%= film.getDescription() != null ? film.getDescription() : "Aucune description disponible." %></p>
-            <a href="seances?filmId=<%= film.getId() %>" class="btn-details">Voir Séances</a>
+    <div class="film-list-container">
+        <button class="scroll-arrow left" onclick="scrollFilms(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button class="scroll-arrow right" onclick="scrollFilms(1)"><i class="fas fa-chevron-right"></i></button>
+        <div class="film-list">
+            <% 
+                List<Film> films = (List<Film>) request.getAttribute("ListFilms");
+                if (films != null && !films.isEmpty()) {
+                    for (Film film : films) {
+            %>
+                <div class="film-card">
+                    <img src="<%= film.getPicture() %>" alt="<%= film.getTitle() %>">
+                    <div class="card-content">
+                      
+                        <p><strong>Type:</strong> <%= film.getType() %></p>
+                        <p><strong>Réalisateur:</strong> <%= film.getDirector() %></p>
+                        <p><strong>Durée:</strong> <%= film.getDuration() %> min</p>
+                        <p><strong>Date de sortie:</strong> <%= new SimpleDateFormat("dd MMM yyyy").format(film.getDate()) %></p>
+                        <p class="description"><%= film.getDescription() != null ? film.getDescription() : "Aucune description disponible." %></p>
+                        <a href="seances?filmId=<%= film.getId() %>" class="btn-details">Voir Séances</a>
+                    </div>
+                </div>
+            <% 
+                    }
+                } else {
+            %>
+                <div class="no-films">
+                    Aucun film disponible.
+                </div>
+            <% 
+                }
+            %>
         </div>
     </div>
-    <% 
-            }
-        } else {
-    %>
-    <div class="no-films">
-        Aucun film disponible.
-    </div>
-    <% 
+
+    <script>
+        function scrollFilms(direction) {
+            const filmList = document.querySelector('.film-list');
+            const scrollAmount = 300; // Ajustez cette valeur pour contrôler la distance de défilement
+            filmList.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
         }
-    %>
-</div>
+    </script>
 
-<%@ include file="footer.jsp" %>
-
+    <%@ include file="footer.jsp" %>
 </body>
 </html>
