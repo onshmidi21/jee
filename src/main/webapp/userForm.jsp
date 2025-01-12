@@ -6,10 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <title><%= request.getAttribute("user") != null ? "Modifier" : "Ajouter" %> un Utilisateur</title>
-<style>
+    <style>
+        /* Styles généraux */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fffff; /* Fond noir légèrement plus clair */
+            background-color: #1e1e1e; /* Fond noir légèrement plus clair */
             color: #fff; /* Texte blanc */
             margin: 0;
             padding: 20px;
@@ -47,7 +48,7 @@
             color: #ff6f61; /* Rouge orangé moderne */
             font-size: 1.1em;
         }
-        input[type="text"], input[type="number"], select {
+        input[type="text"], input[type="password"], input[type="email"], select {
             width: 100%;
             padding: 12px;
             margin-top: 8px;
@@ -60,7 +61,7 @@
             font-size: 1em;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, select:focus {
             border-color: #ff3b2f; /* Rouge plus vif au focus */
             box-shadow: 0 0 8px rgba(255, 59, 47, 0.5); /* Ombre portée au focus */
             outline: none;

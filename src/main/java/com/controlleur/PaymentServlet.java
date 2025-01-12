@@ -73,6 +73,7 @@ public class PaymentServlet extends HttpServlet {
             request.setAttribute("seance", seance);
             request.getRequestDispatcher("/confirmationPaiement.jsp").forward(request, response);
 
+
         } catch (NumberFormatException e) {
             logger.severe("Paramètres invalides : " + e.getMessage());
             gererErreur(request, response, "Paramètres invalides.", "/paiement.jsp");

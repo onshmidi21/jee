@@ -24,6 +24,8 @@ public class Place {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;  // Statut de la place (DISPONIBLE, OCCUPEE)
+    @OneToOne(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Ticket ticket;
 
     // Getters et setters
 

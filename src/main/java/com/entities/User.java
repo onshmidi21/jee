@@ -2,10 +2,12 @@ package com.entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 @Entity
 
 public class User implements Serializable
@@ -15,7 +17,8 @@ public class User implements Serializable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
 	private int id;
-
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Compte compte;
 	private String adress;
 	
 	private String name;

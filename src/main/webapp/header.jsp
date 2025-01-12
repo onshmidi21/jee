@@ -12,10 +12,13 @@
         }
 
         header {
-            background: #FFA500;
+            background: #000; /* Fond noir */
             width: 100%;
             top: 0;
             z-index: 1000;
+            position: sticky; /* Header collant */
+            transition: all 0.3s ease; /* Transition pour l'effet */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre pour l'effet de décollage */
         }
 
         .main-header {
@@ -27,13 +30,12 @@
             padding: 15px 20px;
         }
 
-       
         .main-nav {
             display: flex;
             align-items: center;
         }
 
-       .main-nav a {
+        .main-nav a {
             color: #fff;
             text-decoration: none;
             margin-left: 30px;
@@ -42,20 +44,24 @@
             padding: 8px 12px;
             border-radius: 20px; /* Coins arrondis pour les liens */
         }
-        
-       .main-nav a:hover {
+
+        .main-nav a:hover {
             color: #e50914; /* Couleur au survol */
             background: rgba(255, 255, 255, 0.1); /* Fond léger au survol */
         }
-        
-         .logo {
+
+        .logo {
             color: #fff;
             font-size: 24px;
             font-weight: bold;
             text-decoration: none;
         }
-        
-        
+
+        /* Effet sticky */
+        header.sticky {
+            background: rgba(0, 0, 0, 0.9); /* Fond légèrement transparent */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Ombre plus prononcée */
+        }
 
         @media (max-width: 768px) {
             .main-nav {
@@ -75,18 +81,13 @@
 </head>
 <body>
     <header>
-       
         <div class="main-header">
             <a href="#" class="logo">Cinema</a>
             <nav class="main-nav">
                 <a href="films">Films</a>
                 <a href="cinema">Cinémas</a>
-                <a href="login.jsp">Connexion</a>
                 <a href="inscription.jsp">Créer un compte</a>
-                <a href="loginAdmin.jsp">ConnexionAdmin </a>
-                
-          
-           
+                <a href="loginAdmin.jsp">ConnexionAdmin</a>
             </nav>
         </div>
     </header>
@@ -98,12 +99,6 @@
             } else {
                 $('header').removeClass('sticky');
             }
-        });
-
-        $('.search-bar input').on('focus', function() {
-            $(this).css('width', '300px');
-        }).on('blur', function() {
-            $(this).css('width', '200px');
         });
     </script>
 </body>

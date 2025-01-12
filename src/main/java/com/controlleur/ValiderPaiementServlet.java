@@ -38,23 +38,29 @@ public class ValiderPaiementServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(ValiderPaiementServlet.class.getName());
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        logger.info("Début de la validation du paiement");
+        logger.info("Accès à la page de validation de paiement via GET");
 
+        // Récupérer les paramètres de la requête
+        String placeIdParam = request.getParameter("placeId");
+        String seanceIdParam = request.getParameter("seanceId");
+
+        // Vérifier si l'utilisateur est connecté
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            logger.warning("Utilisateur non authentifié");
-            gererErreur(request, response, "Veuillez vous connecter pour effectuer un paiement.", "/login.jsp");
+            // Stocker les informations de la réservation dans la session
+            session = request.getSession(true); // Créer une nouvelle session si elle n'existe pas
+            session.setAttribute("placeId", placeIdParam);
+            session.setAttribute("seanceId", seanceIdParam);
+
+            // Rediriger vers la page de login
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
         // Récupérer l'utilisateur de la session
         User user = (User) session.getAttribute("user");
-
-        // Récupérer les paramètres
-        String placeIdParam = request.getParameter("placeId");
-        String seanceIdParam = request.getParameter("seanceId");
 
         if (placeIdParam == null || seanceIdParam == null) {
             gererErreur(request, response, "Les paramètres sont manquants.", "/confirmationPaiement.jsp");
@@ -69,7 +75,66 @@ public class ValiderPaiementServlet extends HttpServlet {
             Place place = placeService.find(placeId);
             Seance seance = seanceService.find(seanceId);
 
-          
+            if (place == null || seance == null) {
+                gererErreur(request, response, "Place ou séance non trouvée.", "/confirmationPaiement.jsp");
+                return;
+            }
+
+            // Passer les informations à la JSP pour afficher les détails de la réservation
+            request.setAttribute("place", place);
+            request.setAttribute("seance", seance);
+            request.getRequestDispatcher("/confirmationPaiement.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            logger.severe("Paramètres invalides : " + e.getMessage());
+            gererErreur(request, response, "Paramètres invalides.", "/confirmationPaiement.jsp");
+        } catch (Exception e) {
+            logger.severe("Erreur lors de la récupération des détails de la réservation : " + e.getMessage());
+            gererErreur(request, response, "Une erreur s'est produite lors de la récupération des détails de la réservation.", "/confirmationPaiement.jsp");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        logger.info("Début de la validation du paiement");
+
+        // Récupérer les paramètres
+        String placeIdParam = request.getParameter("placeId");
+        String seanceIdParam = request.getParameter("seanceId");
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            // Stocker les informations de la réservation dans la session
+            session = request.getSession(true); // Créer une nouvelle session si elle n'existe pas
+            session.setAttribute("placeId", placeIdParam);
+            session.setAttribute("seanceId", seanceIdParam);
+
+            // Rediriger vers la page de login
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        // Récupérer l'utilisateur de la session
+        User user = (User) session.getAttribute("user");
+
+        if (placeIdParam == null || seanceIdParam == null) {
+            gererErreur(request, response, "Les paramètres sont manquants.", "/confirmationPaiement.jsp");
+            return;
+        }
+
+        try {
+            int placeId = Integer.parseInt(placeIdParam);
+            int seanceId = Integer.parseInt(seanceIdParam);
+
+            // Récupérer la place et la séance
+            Place place = placeService.find(placeId);
+            Seance seance = seanceService.find(seanceId);
+
+            if (place == null || seance == null) {
+                gererErreur(request, response, "Place ou séance non trouvée.", "/confirmationPaiement.jsp");
+                return;
+            }
 
             // Récupérer le compte de l'utilisateur
             Compte compte = compteLocal.findByUser(user);

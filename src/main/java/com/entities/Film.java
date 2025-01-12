@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.sql.Time;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,9 +31,9 @@ public class Film implements Serializable
 
 	
 	private String title;
-	@OneToMany(mappedBy = "film")	 // Assurez-vous que le nom de la colonne correspond
+    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<SalleDeProjection> salleDeProjection;
-	
+	 
 	private String type;
 	
 

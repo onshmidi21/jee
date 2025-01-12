@@ -2,6 +2,7 @@ package com.entities;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,16 +14,18 @@ public class SalleDeProjection implements Serializable {
 
   
 
-    @ManyToOne
+    @ManyToOne // Activation de la suppression en cascade
     public  Film film; // Film projeté dans cette salle
-    @OneToMany(mappedBy = "salle")
+    @OneToMany(mappedBy = "salle", fetch = FetchType.LAZY ,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seance> seances;
-    @OneToOne
+    @OneToOne // Activation de la suppression en cascade
     @JoinColumn(name = "salle_id") 
     public Salle salle; // Salle physique où a lieu la projection
 
     // Constructeurs
-    public SalleDeProjection() {}
+    public SalleDeProjection() {
+        this.seances = new ArrayList<>(); // Initialisation de la liste
+    }
 
  
 
@@ -56,5 +59,14 @@ public class SalleDeProjection implements Serializable {
     @Override
     public String toString() {
         return "SalleDeProjection [id=" + id  + ", salle=" + salle.getName() + "]";
+    }
+
+
+
+    public List<Seance> getSeances() {
+        if (seances == null) {
+            seances = new ArrayList<>();
+        }
+        return seances;
     }
 }

@@ -3,6 +3,7 @@ package com.entities;
 import java.io.Serializable;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,13 +27,15 @@ public class Cinema implements Serializable
 	private String name;
 	
 	private String adress;
-	@OneToMany
-    private List<Salle> salles;
-	   @ManyToMany
+	 @OneToMany(mappedBy = "cinema", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Salle> salles;
+	    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
 	    @JoinTable(
 	        name = "cinema_film"
 	       
 	    )
+
     private List<Film> films;
 	public int getId()
 	{

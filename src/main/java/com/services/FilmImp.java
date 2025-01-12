@@ -27,10 +27,18 @@ public class FilmImp implements FilmLocal {
 
     @Override
     public void remove(Film film) {
-        Film managedFilm = entityMgr.find(Film.class, film.getId());
-        if (managedFilm != null) {
-            entityMgr.remove(managedFilm);
-        }
+    	 Film managedFilm = entityMgr.find(Film.class, film.getId());
+         if (managedFilm != null) {
+             // Supprimer les relations dans la table de jointure cinema_film
+             Query deleteRelations = entityMgr.createNativeQuery(
+                 "DELETE FROM cinema_film WHERE films_id = :filmId"
+             );
+             deleteRelations.setParameter("filmId", managedFilm.getId());
+             deleteRelations.executeUpdate();
+
+             // Supprimer le film
+             entityMgr.remove(managedFilm);
+         }
     }
 
     @Override

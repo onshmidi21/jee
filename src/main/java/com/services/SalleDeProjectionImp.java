@@ -3,6 +3,7 @@ package com.services;
 import com.entities.Film;
 import com.entities.Salle;
 import com.entities.SalleDeProjection;
+import com.entities.Seance;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -10,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
+import java.util.Collections;
 import java.util.List;
 
 @Stateless
@@ -97,4 +99,26 @@ public class SalleDeProjectionImp implements SalleDeProjectionLocal {
         entityMgr.persist(salleDeProjection); // Sauvegarder la nouvelle SalleDeProjection
         return salleDeProjection;
     }
-}
+    @Override
+    public List<Seance> getSeancesBySalleDeProjection(int salleDeProjectionId) {
+        // Vérifier si la salle de projection existe (optionnel)
+        SalleDeProjection salleDeProjection = entityMgr.find(SalleDeProjection.class, salleDeProjectionId);
+        if (salleDeProjection == null) {
+            throw new IllegalArgumentException("SalleDeProjection not found with ID: " + salleDeProjectionId);
+        }
+
+        // Récupérer les séances associées à cette salle de projection
+        String queryText = "SELECT s FROM Seance s WHERE s.salleDeProjection.id = :salleDeProjectionId";
+        Query query = entityMgr.createQuery(queryText, Seance.class);
+        query.setParameter("salleDeProjectionId", salleDeProjectionId);
+
+        // Exécuter la requête et retourner les résultats
+        try {
+            return query.getResultList();
+        } catch (Exception e) {
+            // Log l'erreur et retourner une liste vide ou relancer l'exception selon le cas
+            System.err.println("Error fetching seances: " + e.getMessage());
+            return Collections.emptyList(); // Ou relancer l'exception
+        }
+    
+}}

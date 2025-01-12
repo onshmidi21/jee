@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212; /* Fond noir légèrement plus clair */
+            background-color: #1e1e1e; /* Fond noir légèrement plus clair */
             color: #fff; /* Texte blanc */
             margin: 0;
             padding: 20px;
@@ -19,7 +19,7 @@
             min-height: 100vh;
         }
         h1 {
-             color: #e67332; /* Rouge orangé moderne */
+            color: #ff6f61; /* Rouge orangé moderne */
             text-align: center;
             margin-bottom: 30px;
             font-size: 2.5em;
@@ -43,7 +43,7 @@
             font-weight: bold;
             margin-top: 15px;
             display: block;
-            color: #e67332 /* Rouge orangé moderne */
+            color: #ff6f61; /* Rouge orangé moderne */
             font-size: 1.1em;
         }
         input[type="text"] {
@@ -65,7 +65,7 @@
             outline: none;
         }
         button {
-            background-color:  #e67332; /* Rouge orangé moderne */
+            background-color: #ff6f61; /* Rouge orangé moderne */
             color: white;
             padding: 12px 24px;
             border: none;
@@ -84,7 +84,7 @@
         a {
             display: inline-block;
             margin-top: 20px;
-            color: #e67332 /* Rouge orangé moderne */
+            color: #ff6f61; /* Rouge orangé moderne */
             text-decoration: none;
             font-weight: bold;
             font-size: 1.1em;

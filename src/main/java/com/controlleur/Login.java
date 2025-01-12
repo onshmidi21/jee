@@ -25,7 +25,17 @@ public class Login extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Rediriger vers la page de login si la méthode GET est utilisée
+        // Récupérer l'URL de la page précédente (referer)
+        String referer = request.getHeader("referer");
+        HttpSession session = request.getSession();
+
+        // Stocker l'URL de la page précédente dans la session
+        if (referer != null && !referer.contains("/login")) {
+            session.setAttribute("redirectAfterLogin", referer);
+            System.out.println("URL de redirection stockée : " + referer);
+        }
+
+        // Rediriger vers la page de login
         System.out.println("Accès à la page de login via GET.");
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
@@ -53,20 +63,20 @@ public class Login extends HttpServlet {
                 User user = userService.findByLogin(login);
                 session.setAttribute("user", user);
 
-                // Récupérer l'URL de redirection depuis la session
-                String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
+                // Récupérer les identifiants de la réservation depuis la session
+                String placeId = (String) session.getAttribute("placeId");
+                String seanceId = (String) session.getAttribute("seanceId");
 
-                System.out.println("Tentative de connexion avec login : " + login);
-                System.out.println("URL de redirection après login : " + redirectUrl);
+                // Nettoyer la session après avoir récupéré les informations
+                session.removeAttribute("placeId");
+                session.removeAttribute("seanceId");
 
-                if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                    // Rediriger vers la page précédemment demandée
-                    System.out.println("Redirection vers : " + redirectUrl);
-                    response.sendRedirect(redirectUrl);
-                    // Nettoyer l'attribut de session après la redirection
-                    session.removeAttribute("redirectAfterLogin");
+                // Rediriger vers la page de paiement avec les identifiants
+                if (placeId != null && seanceId != null) {
+                    System.out.println("Redirection vers la page de paiement avec placeId=" + placeId + " et seanceId=" + seanceId);
+                    response.sendRedirect(request.getContextPath() + "/validerPaiement?placeId=" + placeId + "&seanceId=" + seanceId);
                 } else {
-                    // Rediriger vers la page d'accueil par défaut si aucune URL n'est stockée
+                    // Rediriger vers la page d'accueil par défaut si aucune information n'est stockée
                     System.out.println("Redirection vers la page d'accueil.");
                     response.sendRedirect(request.getContextPath() + "/films");
                 }

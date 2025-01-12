@@ -2,6 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.entities.Seance" %>
 <%@ page import="com.entities.Film" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Date" %>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -20,14 +23,17 @@
         }
 
         body {
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #000; /* Fond noir */
+            color: #fff; /* Texte blanc */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         h1 {
             text-align: center;
-            color: #ff6f00;
-            margin-top: 20px;
+            color:#e50914; /* Orange */
+            margin: 40px 0;
             font-size: 2.5rem;
         }
 
@@ -35,14 +41,16 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-            margin: 20px auto;
+            margin: 40px auto;
             width: 90%;
+            gap: 40px;
         }
 
+        /* Section des détails du film */
         .film-details {
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #222; /* Noir plus clair */
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             width: 30%;
             text-align: center;
@@ -54,6 +62,11 @@
             max-height: 400px;
             border-radius: 8px;
             margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .film-details img:hover {
+            transform: scale(1.05);
         }
 
         .film-details h2 {
@@ -63,14 +76,14 @@
 
         .film-details p {
             font-size: 16px;
-            color: #555;
-            margin: 10px 0;
+            color: #ddd;
+            margin: 15px 0;
         }
 
         .film-actions {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin-top: 20px;
         }
 
@@ -79,81 +92,132 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
             font-size: 16px;
         }
 
         .btn-like {
-            background-color: #ff6f00;
-            color: white;
+            background-color: #FFA500; /* Jaune */
+            color: #000;
         }
 
         .btn-like.active {
-            background-color: #e65c00; /* Couleur plus foncée */
+            background-color: #e6c200;
         }
 
         .btn-love {
-            background-color: #ff1493;
+            background-color:#e50914; /* Rouge */
             color: white;
         }
 
         .btn-love.active {
-            background-color: #c71585; /* Couleur plus foncée */
+            background-color: #c71585;
         }
 
+        /* Section des séances */
         .seances-list {
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #222;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             width: 65%;
         }
 
-        .seance-card {
-            margin-bottom: 15px;
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
+        /* Styles pour le tableau des séances */
+        .seances-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        .seance-card:last-child {
-            border-bottom: none;
+        .seances-table th, .seances-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
         }
 
-        .seance-card h3 {
-            font-size: 18px;
-            color: #ff6f00;
-            margin-bottom: 10px;
+        .seances-table th {
+            background-color: #333;
+            color: #FFA500;
+            font-size: 16px;
         }
 
-        .seance-card p {
-            font-size: 14px;
-            color: #555;
-            margin: 5px 0;
+        .seances-table tr:hover {
+            background-color: #444;
         }
 
-        .btn-reserve {
-            padding: 10px 20px;
-            background-color: #ff6f00;
+        .seances-table .btn-reserve {
+            padding: 8px 16px;
+            background-color: #FFA500;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        .btn-reserve:hover {
+        .seances-table .btn-reserve:hover {
             background-color: #e65c00;
+            transform: scale(1.05);
         }
 
-        .no-seances {
+        /* Responsivité du tableau */
+        @media (max-width: 768px) {
+            .seances-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Calendrier annuel réduit */
+        .annual-calendar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 colonnes pour les mois */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .month-calendar {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 8px;
             text-align: center;
-            color: #ff6f00;
-            font-size: 18px;
-            margin: 20px 0;
         }
 
-        /* Media Queries for responsiveness */
+        .month-calendar h4 {
+            color: #FFA500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .month-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+
+        .calendar-day {
+            background-color: #444;
+            color: #fff;
+            padding: 3px;
+            border-radius: 3px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-size: 10px;
+        }
+
+        .calendar-day.projection-day {
+            background-color: #FFA500;
+            color: #000;
+        }
+
+        .calendar-day:hover {
+            background-color: #555;
+            transform: translateY(-3px);
+        }
+
+        /* Media Queries pour la responsivité */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -161,8 +225,29 @@
 
             .film-details, .seances-list {
                 width: 100%;
-                margin-bottom: 20px;
+                margin-bottom: 30px;
             }
+
+            .annual-calendar {
+                grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur mobile */
+            }
+        }
+
+        /* Style pour le message */
+        #message {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        /* Style pour mettre en évidence la séance */
+        .highlighted-seance {
+            background-color: #555 !important;
+            transition: background-color 0.5s ease;
         }
     </style>
 </head>
@@ -173,8 +258,26 @@
 <%
     String filmId = request.getParameter("filmId");
     Film film = (Film) request.getAttribute("film");
+    List<Seance> seances = (List<Seance>) request.getAttribute("seances");
+
+    // Récupérer l'année actuelle
+    Calendar calendar = Calendar.getInstance();
+    int currentYear = calendar.get(Calendar.YEAR);
+
+    // Créer une liste des jours de projection
+    java.util.Map<String, java.util.Set<Integer>> projectionDaysByMonth = new java.util.HashMap<>();
+    if (seances != null) {
+        for (Seance seance : seances) {
+            calendar.setTime(seance.getDate());
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            String monthKey = currentYear + "-" + month;
+            projectionDaysByMonth.computeIfAbsent(monthKey, k -> new java.util.HashSet<>()).add(day);
+        }
+    }
 %>
 
+<h1>Séances disponibles</h1>
 
 <div class="container">
     <%-- Colonne de gauche : Affiche et informations du film --%>
@@ -185,38 +288,84 @@
         <p><strong>Réalisateur:</strong> <%= film.getDirector() %></p>
         <p><strong>Type:</strong> <%= film.getType() %></p>
         <p><strong>Durée:</strong> <%= film.getDuration() %> min</p>
-        <p><strong>Date de sortie:</strong> <%= new java.text.SimpleDateFormat("dd MMM yyyy").format(film.getDate()) %></p>
+        <p><strong>Date de sortie:</strong> <%= new SimpleDateFormat("dd MMM yyyy").format(film.getDate()) %></p>
         
         <!-- Boutons Like et J'adore -->
         <div class="film-actions">
             <button id="btn-like" class="btn-like"><i class="fas fa-thumbs-up"></i> Like</button>
             <button id="btn-love" class="btn-love"><i class="fas fa-heart"></i> J'adore</button>
         </div>
+
+        <!-- Zone pour afficher le message -->
+        <div id="message"></div>
     </div>
 
     <%-- Colonne de droite : Liste des séances --%>
     <div class="seances-list">
-        <h2>Séances disponibles</h2>
+        <!-- Calendrier annuel réduit -->
+        <div class="annual-calendar">
+            <%
+                // Afficher les 12 mois de l'année
+                for (int month = 0; month < 12; month++) {
+                    calendar.set(currentYear, month, 1);
+                    String monthName = new SimpleDateFormat("MMM").format(calendar.getTime());
+                    String monthKey = currentYear + "-" + month;
+                    java.util.Set<Integer> projectionDays = projectionDaysByMonth.getOrDefault(monthKey, new java.util.HashSet<>());
+            %>
+                <div class="month-calendar">
+                    <h4><%= monthName %></h4>
+                    <div class="month-days">
+                        <%
+                            // Afficher les jours du mois
+                            int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                            for (int day = 1; day <= maxDay; day++) {
+                                String dayClass = projectionDays.contains(day) ? "calendar-day projection-day" : "calendar-day";
+                        %>
+                            <div class="<%= dayClass %>" data-date="<%= String.format("%04d-%02d-%02d", currentYear, month + 1, day) %>">
+                                <%= day %>
+                            </div>
+                        <%
+                            }
+                        %>
+                    </div>
+                </div>
+            <%
+                }
+            %>
+        </div>
+
         <%-- Vérification si des séances existent --%>
         <%
-            List<Seance> seances = (List<Seance>) request.getAttribute("seances");
             if (seances != null && !seances.isEmpty()) {
-                for (Seance seance : seances) {
-                    String salleName = (seance.salle != null && seance.salle.salle != null) ? seance.salle.salle.getName() : "Salle inconnue";
-                    String cinemaName = (seance.salle != null && seance.salle.salle != null) ? seance.salle.salle.cinema.getName() : "Salle inconnue";
         %>
-            <div class="seance-card">
-                <h3><%= seance.getDate() %></h3>
-                <p><strong>Horaire:</strong> <%= seance.getHoraire() %></p>
-                <p><strong>Salle:</strong> <%= salleName %></p>
-                <p><strong>Cinéma:</strong> <%= cinemaName %></p>
-                <form action="reservation" method="GET">
-                    <input type="hidden" name="seance_id" value="<%= seance.getId() %>">
-                    <button class="btn-reserve" type="submit">Réserver</button>
-                </form>
-            </div>
+            <table class="seances-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Horaire</th>
+                        <th>Salle</th>
+                        <th>Cinéma</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (Seance seance : seances) { %>
+                        <tr id="seance-<%= new SimpleDateFormat("yyyy-MM-dd").format(seance.getDate()) %>">
+                            <td><%= new SimpleDateFormat("dd/MM/yyyy").format(seance.getDate()) %></td>
+                            <td><%= seance.getHoraire() %></td>
+                            <td><%= seance.getSalle() != null ? seance.salle.salle.cinema.getName() : "Salle inconnue" %></td>
+                            <td><%= seance.getSalle() != null ? seance.salle.salle.cinema.getName() : "Cinéma inconnu" %></td>
+                            <td>
+                                <form action="reservation" method="GET">
+                                    <input type="hidden" name="seance_id" value="<%= seance.getId() %>">
+                                    <button class="btn-reserve" type="submit">Réserver</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
         <%
-                }
             } else {
         %>
             <p class="no-seances">Aucune séance n'est disponible pour ce film.</p>
@@ -229,20 +378,38 @@
 <%@ include file="footer.jsp" %>
 
 <script>
-    // Récupérer les boutons
-    const btnLike = document.getElementById('btn-like');
-    const btnLove = document.getElementById('btn-love');
-
     // Gestionnaire d'événement pour le bouton "Like"
-    btnLike.addEventListener('click', function() {
-        // Basculer la classe active
-        btnLike.classList.toggle('active');
+    document.getElementById('btn-like').addEventListener('click', function() {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = "Vous avez aimé ce film !";
+        messageDiv.style.display = 'block';
+        this.classList.toggle('active'); // Ajoute ou retire la classe "active"
     });
 
     // Gestionnaire d'événement pour le bouton "J'adore"
-    btnLove.addEventListener('click', function() {
-        // Basculer la classe active
-        btnLove.classList.toggle('active');
+    document.getElementById('btn-love').addEventListener('click', function() {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = "Vous adorez ce film !";
+        messageDiv.style.display = 'block';
+        this.classList.toggle('active'); // Ajoute ou retire la classe "active"
+    });
+
+    // Gestionnaire d'événement pour les jours du calendrier
+    document.querySelectorAll('.calendar-day.projection-day').forEach(day => {
+        day.addEventListener('click', function() {
+            const date = this.getAttribute('data-date');
+            console.log("Date cliquée :", date); // Vérifiez dans la console
+            const seanceRow = document.getElementById(`seance-${date}`);
+            if (seanceRow) {
+                seanceRow.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                seanceRow.classList.add('highlighted-seance');
+                setTimeout(() => {
+                    seanceRow.classList.remove('highlighted-seance');
+                }, 2000);
+            } else {
+                console.error("Aucune séance trouvée pour la date :", date);
+            }
+        });
     });
 </script>
 

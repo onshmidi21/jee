@@ -1,6 +1,7 @@
 package com.services;
 
 import com.entities.SalleDeProjection;
+import com.entities.Seance;
 
 import jakarta.ejb.Local;
 
@@ -15,4 +16,5 @@ public interface SalleDeProjectionLocal {
     List<SalleDeProjection> findAll();
     List<SalleDeProjection> findByFilm(int filmId); // Optionnel : pour trouver les salles par film
 	SalleDeProjection getOrCreateSalleDeProjection(int salleId, int filmId);
+	public List<Seance> getSeancesBySalleDeProjection(int salleDeProjectionId);
 }
