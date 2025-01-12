@@ -25,28 +25,7 @@ public class PaiementService implements PaiementLocal {
     @PersistenceContext
     private EntityManager em;
 
-    @Override
-    public boolean effectuerPaiement(int compteId, Float montant) {
-        if (montant == null || montant <= 0.0f) {
-            throw new IllegalArgumentException("Le montant doit être positif");
-        }
-
-        Compte compte = compteService.find(compteId);
-        if (compte == null) {
-            throw new IllegalArgumentException("Compte non trouvé");
-        }
-
-        if (compte.getSolde() < montant) {
-            return false; // Solde insuffisant
-        }
-
-        // Débiter le compte
-        compte.setSolde(compte.getSolde() - montant);
-        compteService.update(compte);
-        
-
-        return true; // Paiement effectué avec succès
-    }
+    
     @Override
     public boolean effectuerPaiementAvecPlaceEtSeance(int compteId, int placeId, int seanceId) {
     	    Compte compte = compteService.find(compteId);
@@ -75,30 +54,7 @@ public class PaiementService implements PaiementLocal {
     	    return true;
     	}
 
-    @Override
-    public boolean crediterCompte(int compteId, Float montant) {
-        if (montant == null || montant <= 0.0f) {
-            throw new IllegalArgumentException("Le montant doit être positif");
-        }
+    
 
-        Compte compte = compteService.find(compteId);
-        if (compte == null) {
-            throw new IllegalArgumentException("Compte non trouvé");
-        }
-
-        // Créditer le compte
-        compte.setSolde(compte.getSolde() + montant);
-        compteService.update(compte);
-
-        return true; // Crédit effectué avec succès
-    }
-
-    @Override
-    public Float consulterSolde(int compteId) {
-        Compte compte = compteService.find(compteId);
-        if (compte == null) {
-            throw new IllegalArgumentException("Compte non trouvé");
-        }
-        return compte.getSolde();
-    }
+    
 }

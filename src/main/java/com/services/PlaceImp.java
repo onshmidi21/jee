@@ -38,13 +38,14 @@ public class PlaceImp implements PlaceLocal {
         int columns = 10; // Par exemple, 10 colonnes par rangée
         int rows = (int) Math.ceil((double) capacite / columns); // Calcul du nombre de rangées
 
-        List<Place> places = new ArrayList<>();
+        // Vider la collection existante de places
+        salle.getPlaces().clear();
 
         // Création des places
         for (int row = 1; row <= rows; row++) {
             for (int col = 1; col <= columns; col++) {
                 // Si la capacité est dépassée, on arrête de créer des places
-                if (places.size() >= capacite) {
+                if (salle.getPlaces().size() >= capacite) {
                     break;
                 }
 
@@ -52,15 +53,14 @@ public class PlaceImp implements PlaceLocal {
                 place.setRow(row); // Numéro de la rangée
                 place.setCol(col); // Numéro de la colonne
                 place.setStatus(Status.DISPONIBLE); // Statut initial
-                place.setSeance(salle); // Association avec la salle
+                place.setSeance(salle); // Association avec la salle (relation bidirectionnelle)
 
                 em.persist(place); // Persister la place dans la base de données
-                places.add(place); // Ajouter la place à la liste
+                salle.getPlaces().add(place); // Ajouter la place à la liste existante
             }
         }
 
-        // Assigner la liste de places à la salle
-        salle.setPlaces(places);
+        // Pas besoin de salle.setPlaces(places) car la collection a été modifiée directement
     }
 
     @Override

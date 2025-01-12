@@ -4,12 +4,13 @@ import java.util.List;
 
 import com.entities.User;
 
+import jakarta.ejb.Stateful;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
-@Stateless
+@Stateful
 public class UserImp implements UserLocal {
 
     @PersistenceContext(unitName = "Cinema-ejbPU")

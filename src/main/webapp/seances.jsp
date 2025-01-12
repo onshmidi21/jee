@@ -155,7 +155,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
-
+ 
         .seances-table .btn-reserve:hover {
             background-color: #e65c00;
             transform: scale(1.05);
@@ -353,7 +353,7 @@
                         <tr id="seance-<%= new SimpleDateFormat("yyyy-MM-dd").format(seance.getDate()) %>">
                             <td><%= new SimpleDateFormat("dd/MM/yyyy").format(seance.getDate()) %></td>
                             <td><%= seance.getHoraire() %></td>
-                            <td><%= seance.getSalle() != null ? seance.salle.salle.cinema.getName() : "Salle inconnue" %></td>
+                            <td><%= seance.getSalle() != null ? seance.salle.salle.getName() : "Salle inconnue" %></td>
                             <td><%= seance.getSalle() != null ? seance.salle.salle.cinema.getName() : "Cinéma inconnu" %></td>
                             <td>
                                 <form action="reservation" method="GET">

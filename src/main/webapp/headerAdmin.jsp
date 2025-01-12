@@ -98,7 +98,7 @@
         </nav>
 
         <!-- Bouton de déconnexion -->
-        <a href="${pageContext.request.contextPath}/logout" class="logout">Déconnexion</a>
+        <a href="${pageContext.request.contextPath}/films" class="logout">Déconnexion</a>
     </header>
     
 </body>

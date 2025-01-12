@@ -80,4 +80,9 @@ this.places=places2;
 	public void setCinema(Cinema cinema2) {
 this.cinema=cinema2;		
 	}
+
+	public List<Place> getPlaces() {
+		// TODO Auto-generated method stub
+		return  this.places;
+	}
 }

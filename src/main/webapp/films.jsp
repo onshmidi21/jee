@@ -178,6 +178,7 @@
                 <div class="film-card">
                     <img src="<%= film.getPicture() %>" alt="<%= film.getTitle() %>">
                     <div class="card-content">
+                                              <p><strong>nom:</strong> <%= film.getTitle() %></p>
                       
                         <p><strong>Type:</strong> <%= film.getType() %></p>
                         <p><strong>Réalisateur:</strong> <%= film.getDirector() %></p>
